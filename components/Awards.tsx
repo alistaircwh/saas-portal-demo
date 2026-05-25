@@ -1,3 +1,5 @@
+import Reveal from "@/components/Reveal";
+
 const awards = [
   {
     badge: "🥇",
@@ -36,24 +38,27 @@ export default function Awards() {
     <section className="py-20 bg-[#0D0A0A]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            You Can Trust This
-          </h2>
-          <p className="text-stone-400 max-w-xl mx-auto text-lg">
-            Don&apos;t just take our word for it — here&apos;s why thousands of businesses around the world rely on Vigilant Asia MTD.
-          </p>
+          <Reveal>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              You Can Trust This
+            </h2>
+          </Reveal>
+          <Reveal delay={80}>
+            <p className="text-stone-400 max-w-xl mx-auto text-lg">
+              Don&apos;t just take our word for it — here&apos;s why thousands of businesses around the world rely on Vigilant Asia MTD.
+            </p>
+          </Reveal>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {awards.map((a) => (
-            <div
-              key={a.title}
-              className="bg-[#130E0E] border border-white/10 rounded-2xl p-6 hover:border-[#C41E1E]/30 transition-colors"
-            >
-              <div className="text-3xl mb-3">{a.badge}</div>
-              <h3 className="text-white font-semibold mb-2">{a.title}</h3>
-              <p className="text-stone-400 text-sm leading-6">{a.detail}</p>
-            </div>
+          {awards.map((a, i) => (
+            <Reveal key={a.title} delay={i * 60} className="h-full">
+              <div className="bg-[#130E0E] border border-white/10 rounded-2xl p-6 h-full transition-[border-color,transform,box-shadow] duration-[var(--dur-standard)] ease-[var(--ease-premium)] hover:border-[#C41E1E]/40 hover:-translate-y-0.5 hover:shadow-[0_12px_32px_-16px_rgba(196,30,30,0.35)]">
+                <div className="text-3xl mb-3">{a.badge}</div>
+                <h3 className="text-white font-semibold mb-2">{a.title}</h3>
+                <p className="text-stone-400 text-sm leading-6">{a.detail}</p>
+              </div>
+            </Reveal>
           ))}
         </div>
       </div>

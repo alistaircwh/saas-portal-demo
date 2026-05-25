@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+import Reveal from "@/components/Reveal";
 
 const faqs = [
   {
@@ -33,36 +35,54 @@ export default function FAQAccordion() {
     <section id="faq" className="py-20 bg-background">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-14">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Common questions</h2>
-          <p className="text-muted-foreground text-lg">Everything you need to know before subscribing.</p>
+          <Reveal>
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Common questions</h2>
+          </Reveal>
+          <Reveal delay={80}>
+            <p className="text-muted-foreground text-lg">Everything you need to know before subscribing.</p>
+          </Reveal>
         </div>
 
         <div className="space-y-3">
           {faqs.map((faq, i) => {
             const isOpen = openIndex === i;
             return (
-              <Card key={i} className="overflow-hidden">
-                <button
-                  className="w-full flex items-center justify-between px-6 py-5 text-left"
-                  onClick={() => setOpenIndex(isOpen ? null : i)}
-                >
-                  <span className="text-foreground font-medium text-sm md:text-base pr-4">{faq.q}</span>
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    className={`text-primary shrink-0 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+              <Reveal key={i} delay={i * 50}>
+                <Card className="overflow-hidden">
+                  <button
+                    className="w-full flex items-center justify-between px-6 py-5 text-left transition-colors duration-[var(--dur-fast)] hover:bg-foreground/[0.02]"
+                    onClick={() => setOpenIndex(isOpen ? null : i)}
+                    aria-expanded={isOpen}
                   >
-                    <path d="M5 7.5l5 5 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </button>
-                {isOpen && (
-                  <div className="px-6 pb-5">
-                    <p className="text-muted-foreground text-sm leading-relaxed">{faq.a}</p>
+                    <span className="text-foreground font-medium text-sm md:text-base pr-4">{faq.q}</span>
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      className={cn(
+                        "text-primary shrink-0 transition-transform duration-[var(--dur-standard)] ease-[var(--ease-premium)]",
+                        isOpen && "rotate-180",
+                      )}
+                    >
+                      <path d="M5 7.5l5 5 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </button>
+                  <div
+                    className={cn(
+                      "grid transition-[grid-template-rows,opacity] duration-[var(--dur-standard)] ease-[var(--ease-premium)]",
+                      isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",
+                    )}
+                    aria-hidden={!isOpen}
+                  >
+                    <div className="min-h-0 overflow-hidden">
+                      <div className="px-6 pb-5">
+                        <p className="text-muted-foreground text-sm leading-relaxed">{faq.a}</p>
+                      </div>
+                    </div>
                   </div>
-                )}
-              </Card>
+                </Card>
+              </Reveal>
             );
           })}
         </div>

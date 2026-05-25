@@ -17,7 +17,7 @@ This is the marketing and sales website for **Vigilant Asia**, a Mobile Threat D
 - **Styling:** Tailwind CSS v4 (PostCSS plugin, `@tailwindcss/postcss`)
 - **UI primitives:** Base UI (`@base-ui/react`) + shadcn components (in `components/ui/`)
 - **Icons:** `lucide-react` v1.8
-- **Animations:** `tw-animate-css`
+- **Animations:** `tw-animate-css` + project motion language (see [Motion & Interactions](#motion--interactions))
 - **Language:** TypeScript strict mode
 
 ---
@@ -44,6 +44,8 @@ mtd-portal/
 │   ├── FAQAccordion.tsx    # FAQ section — heading text is "Common questions"
 │   ├── ContactForm.tsx     # Form component used in /contact page
 │   ├── Footer.tsx          # id="contact" — email + WhatsApp contact links
+│   ├── Reveal.tsx          # Client wrapper: fade+rise an element when it enters viewport
+│   ├── useReveal.ts        # IntersectionObserver hook used by Reveal (one-shot)
 │   └── ui/                 # shadcn primitives: button, card, dialog, input
 ├── lib/
 │   └── utils.ts            # cn() utility
@@ -85,6 +87,40 @@ No monthly plans. Toggle is 1 Year / 2 Years (Save 10%) / 3 Years (Save 21%).
 
 ---
 
+## Motion & Interactions
+
+The site has a deliberate, restrained motion language. **Reuse it; don't invent new curves or durations.** All animations gate on `prefers-reduced-motion` via a global rule in `app/globals.css`.
+
+**Design tokens** (defined in `app/globals.css` `@theme inline`):
+- `--ease-premium: cubic-bezier(0.16, 1, 0.3, 1)` — the one easing curve for almost everything
+- `--ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1)` — reserved for lifts/scales
+- `--dur-fast: 150ms` — hover / focus feedback
+- `--dur-standard: 350ms` — state changes, reveals, accordion, toggle pill
+- `--dur-ambient: 700ms` — slow background drifts
+
+**Keyframes** (in `app/globals.css`):
+- `va-rise` — opacity 0 + translateY(12px) → 0; used by `.va-reveal`
+- `va-glow-drift` — slow background-position oscillation (12s loop on the hero radial)
+- `va-popular-pulse` — slow red box-shadow breath (4s loop, Pricing's Family tier only)
+- `va-check-draw` — stroke-dasharray draw-on for the contact success SVG check
+
+**Reusable primitives:**
+- `<Reveal delay={ms}>` (`components/Reveal.tsx`) — wrap any element/section for an on-scroll fade+rise. One-shot (does not re-animate on scroll-up). Hero uses it on mount; sections use it on scroll. Stagger siblings with `delay`.
+- `useReveal()` (`components/useReveal.ts`) — the underlying hook; returns a ref to attach to a node.
+- `.va-reveal` CSS class — the styling layer used by `<Reveal>`; reveals when `data-revealed="true"` is set.
+- `.va-link-underline` — underline-from-left on hover/focus. Used on navbar links and (via `.va-link-group` parent) on footer email/WhatsApp.
+
+**Established interaction patterns** — copy these instead of inventing new ones:
+- **Sliding toggle pill** (`components/Pricing.tsx`): refs on each button, one absolutely-positioned `<span>` indicator whose `left`/`width` transition via `--dur-standard`.
+- **Smooth accordion / mobile menu expand** (`components/FAQAccordion.tsx`, `components/Navbar.tsx`): always-mounted inner panel inside a `grid` wrapper that animates `grid-template-rows: 0fr → 1fr`. No height measurement, no JS animation.
+- **Cross-fading value swap** (Pricing price digits): wrap the changing value in a span keyed off the changing state (`key={years}`) plus `animate-in fade-in-0 zoom-in-95 duration-200` from `tw-animate-css`.
+- **Card hover language** (`components/ui/card.tsx`, baseline): `hover:-translate-y-0.5 hover:ring-foreground/20`. Inherited by every Card on the site. Don't add big scales or rotations.
+- **Reduced-motion is the floor, not the ceiling.** Never write an animation that bypasses the global `@media (prefers-reduced-motion: reduce)` rule.
+
+**Things we deliberately do NOT do:** parallax, autoplay carousels, marquee strips, floating particles, bouncy springs, hero typewriters, custom cursors, hover scales > 1.02. If a future change wants one of these, push back.
+
+---
+
 ## Running Locally
 
 ```bash
@@ -98,12 +134,13 @@ npm run lint
 
 ## Tests
 
-Playwright e2e tests live in `tests/`. Config: `playwright.config.ts` (baseURL: `http://localhost:3000`, Chromium only).
+Playwright e2e tests live in `tests/`. Config: `playwright.config.ts` (Chromium only). `baseURL` defaults to `http://localhost:3000` but reads from `PLAYWRIGHT_BASE_URL` env if set — useful when Next falls back to port 3001 because something else holds 3000.
 
 ```bash
 cd mtd-portal
-npx playwright test          # run all 29 tests
-npx playwright test --ui     # interactive UI mode
+npx playwright test                                        # run all 29 tests
+PLAYWRIGHT_BASE_URL=http://localhost:3001 npx playwright test   # target alt port
+npx playwright test --ui                                   # interactive UI mode
 ```
 
 Test files:
@@ -115,6 +152,10 @@ Test files:
 - Use `exact: true` or `getByRole("heading", { name: "..." })` when text appears in multiple elements
 - FAQAccordion heading is **"Common questions"** (not "Frequently asked")
 - Pricing tier headings must use `getByRole("heading")` — tier names appear in multiple nodes
+- The FAQ panel and mobile menu are **always in the DOM** (collapsed via `grid-template-rows: 0fr`). Assert `toBeVisible()` after expand, not `toHaveCount(0)` before.
+- The Pricing term toggle has a sliding indicator `<span>` *behind* the buttons — the active "selected" styling lives on that span, not the button itself. Assert on text/aria-pressed, not on the active background class.
+
+**Known stale tests:** `tests/home.spec.ts` lines 66–84 reference a Monthly/Annual toggle that no longer exists (the UI is 1/2/3-Year). These two tests have been failing since before the pricing UI changed and should be rewritten against the current term toggle.
 
 ---
 
@@ -141,3 +182,4 @@ Always verify the golden path (page loads, primary CTAs work, pricing toggle wor
 - `app/api/contact/route.ts` — currently only `console.log`s enquiries; needs email (e.g. Resend) or CRM integration
 - WhatsApp link in Footer uses placeholder `wa.me/60XXXXXXXXX` — replace with real number
 - Terms of Service and Privacy Policy links are `href="#"` placeholders
+- `tests/home.spec.ts` lines 66–84 reference a non-existent Monthly/Annual toggle and need rewriting against the 1/2/3-Year term toggle (see Tests section)

@@ -9,10 +9,10 @@ import { cn } from "@/lib/utils";
 type FormState = "idle" | "submitting" | "success" | "error";
 
 const selectClass =
-  "w-full min-w-0 rounded-lg border border-input bg-background px-2.5 py-2 text-sm text-foreground transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 h-10 appearance-none";
+  "w-full min-w-0 rounded-lg border border-input bg-background px-2.5 py-2 text-sm text-foreground transition-[color,background-color,border-color,box-shadow,--tw-ring-color] duration-[var(--dur-fast)] outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 h-10 appearance-none";
 
 const textareaClass =
-  "w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-2 text-sm text-foreground placeholder:text-muted-foreground transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 resize-none";
+  "w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-2 text-sm text-foreground placeholder:text-muted-foreground transition-[color,background-color,border-color,box-shadow,--tw-ring-color] duration-[var(--dur-fast)] outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 resize-none";
 
 export default function ContactForm() {
   const [state, setState] = useState<FormState>("idle");
@@ -50,9 +50,22 @@ export default function ContactForm() {
 
   if (state === "success") {
     return (
-      <Card className="border-primary/30 bg-primary/5">
+      <Card className="border-primary/30 bg-primary/5 animate-in fade-in-0 slide-in-from-bottom-2 duration-[var(--dur-standard)]">
         <CardContent className="p-10 text-center">
-          <div className="text-5xl mb-4">✅</div>
+          <div className="flex items-center justify-center mb-4">
+            <span className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-primary/15 border border-primary/30">
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                <path
+                  d="M7 14.5l4.5 4.5L21 9.5"
+                  stroke="var(--primary)"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="va-check-path"
+                />
+              </svg>
+            </span>
+          </div>
           <h3 className="text-foreground text-xl font-bold mb-2">Message Received</h3>
           <p className="text-muted-foreground">We&apos;ll be in touch within 1 business day with a tailored quote.</p>
         </CardContent>
@@ -143,7 +156,24 @@ export default function ContactForm() {
             disabled={state === "submitting"}
             className={cn("w-full h-11 text-sm font-semibold")}
           >
-            {state === "submitting" ? "Sending..." : "Send Message"}
+            {state === "submitting" ? (
+              <>
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  className="animate-spin -ml-0.5 mr-2"
+                  aria-hidden="true"
+                >
+                  <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2.5" opacity="0.25" />
+                  <path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+                </svg>
+                Sending...
+              </>
+            ) : (
+              "Send Message"
+            )}
           </Button>
         </form>
       </CardContent>

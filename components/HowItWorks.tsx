@@ -1,4 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
+import Reveal from "@/components/Reveal";
 
 const steps = [
   {
@@ -44,22 +45,28 @@ export default function HowItWorks() {
     <section id="how-it-works" className="py-20 bg-card">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-14">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">How it works</h2>
-          <p className="text-muted-foreground text-lg max-w-xl mx-auto">Three steps from payment to protected. That&apos;s it.</p>
+          <Reveal>
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">How it works</h2>
+          </Reveal>
+          <Reveal delay={80}>
+            <p className="text-muted-foreground text-lg max-w-xl mx-auto">Three steps from payment to protected. That&apos;s it.</p>
+          </Reveal>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {steps.map((step) => (
-            <Card key={step.number} className="bg-background">
-              <CardContent className="flex flex-col items-center text-center p-8">
-                <div className="mb-4 p-3 rounded-xl bg-primary/10 border border-primary/20">
-                  {step.icon}
-                </div>
-                <span className="text-primary font-bold text-sm tracking-widest mb-2">{step.number}</span>
-                <h3 className="text-foreground font-semibold text-lg mb-3">{step.title}</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">{step.description}</p>
-              </CardContent>
-            </Card>
+          {steps.map((step, i) => (
+            <Reveal key={step.number} delay={i * 80} className="h-full">
+              <Card className="bg-background h-full">
+                <CardContent className="flex flex-col items-center text-center p-8">
+                  <div className="mb-4 p-3 rounded-xl bg-primary/10 border border-primary/20">
+                    {step.icon}
+                  </div>
+                  <span className="text-primary font-bold text-sm tracking-widest mb-2">{step.number}</span>
+                  <h3 className="text-foreground font-semibold text-lg mb-3">{step.title}</h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed">{step.description}</p>
+                </CardContent>
+              </Card>
+            </Reveal>
           ))}
         </div>
       </div>

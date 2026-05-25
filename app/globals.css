@@ -91,6 +91,11 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+  --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 150ms;
+  --dur-standard: 350ms;
+  --dur-ambient: 700ms;
 }
 
 @layer base {
@@ -104,5 +109,85 @@
   html {
     @apply font-sans;
     scroll-behavior: smooth;
+  }
+}
+
+@keyframes va-rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes va-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes va-glow-drift {
+  0%, 100% { background-position: 60% 20%; opacity: 0.20; }
+  50% { background-position: 58% 22%; opacity: 0.26; }
+}
+
+@keyframes va-popular-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(196, 30, 30, 0); }
+  50% { box-shadow: 0 0 40px -10px rgba(196, 30, 30, 0.35); }
+}
+
+@keyframes va-check-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+.va-check-path {
+  stroke-dasharray: 28;
+  stroke-dashoffset: 28;
+  animation: va-check-draw 600ms var(--ease-premium) 100ms forwards;
+}
+
+.va-reveal {
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity var(--dur-standard) var(--ease-premium),
+    transform var(--dur-standard) var(--ease-premium);
+  transition-delay: var(--va-reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.va-reveal[data-revealed="true"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.va-link-underline {
+  position: relative;
+}
+.va-link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  height: 1px;
+  width: 100%;
+  background-color: currentColor;
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform var(--dur-standard) var(--ease-premium);
+}
+.va-link-underline:hover::after,
+.va-link-underline:focus-visible::after,
+.va-link-group:hover .va-link-underline::after,
+.va-link-group:focus-visible .va-link-underline::after {
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .va-reveal {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }
