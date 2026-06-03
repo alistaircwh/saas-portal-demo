@@ -12,6 +12,11 @@
 
 # testing
 /coverage
+/test-results
+/playwright-report
+
+# claude code
+/.claude
 
 # next.js
 /.next/

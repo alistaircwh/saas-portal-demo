@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Vigilant Asia — MTD Portal
 
-## Getting Started
+Marketing and sales site for **Vigilant Asia**, a Mobile Threat Defense product for Malaysian businesses and consumers, powered by Zimperium.
 
-First, run the development server:
+**Live:** https://mobile-threat-defense.vercel.app
+
+> Version 1. Copy, pricing, and trust badges are placeholder content pending business sign-off. The structure and the reasoning below are settled.
+
+## Not in this repo
+
+The production build has a payment gateway and automated license provisioning that emails the QR to the buyer. That side of things is confidential and isn't part of this public repo.
+
+## Stack
+
+- Next.js 16 (App Router), React 19, TypeScript strict
+- Tailwind CSS v4 via `@tailwindcss/postcss`
+- Base UI (`@base-ui/react`) and shadcn primitives in [components/ui/](components/ui/)
+- Playwright (Chromium) for end-to-end tests
+
+## Running locally
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev      # http://localhost:3000
+npm run build
+npm run lint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Project layout
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+app/                App Router pages and /api/contact route
+components/         Section components (Hero, Pricing, FAQAccordion, ...) and ui/ primitives
+lib/utils.ts        cn() helper
+tests/              Playwright e2e specs
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Section anchors: `#hero`, `#how-it-works`, `#pricing`, `#contact` (footer).
 
-## Learn More
+## Tests
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npx playwright test
+PLAYWRIGHT_BASE_URL=http://localhost:3001 npx playwright test
+npx playwright test --ui
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Specs in [tests/](tests/): `api.spec.ts`, `contact.spec.ts`, `home.spec.ts`.
