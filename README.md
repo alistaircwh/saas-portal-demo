@@ -4,7 +4,7 @@ Marketing and sales site for **Vigilant Asia**, a Mobile Threat Defense product 
 
 **Live:** https://mobile-threat-defense.vercel.app
 
-> Version 1. Copy, pricing, and trust badges are placeholder content pending business sign-off. The structure and the reasoning below are settled.
+> Version 1. Copy, pricing, and trust badges are placeholder content pending business sign-off.
 
 ## Not in this repo
 
