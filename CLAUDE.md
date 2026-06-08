@@ -34,8 +34,21 @@ mtd-portal/
 │   ├── contact/
 │   │   └── page.tsx        # Contact page (/contact)
 │   └── api/
-│       └── contact/
-│           └── route.ts    # POST /api/contact — logs enquiry (stub; needs CRM/email integration)
+│       ├── contact/
+│       │   └── route.ts    # POST /api/contact — logs enquiry (stub; needs CRM/email integration)
+│       ├── orders/
+│       │   └── [id]/pay/
+│       │       └── route.ts  # POST /api/orders/:id/pay — creates Payment record, sets order to pending_payment, returns gateway redirect URL
+│       ├── payments/
+│       │   └── callback/
+│       │       └── route.ts  # POST /api/payments/callback — gateway webhook; validates signature, deduplicates, triggers fulfillOrder on success
+│       ├── dev/
+│       │   ├── seed/
+│       │   │   └── route.ts  # DEV ONLY — seeds a test package/user/order; delete before prod
+│       │   └── demo/
+│       │       └── route.ts  # DEV ONLY — seeds + initiates payment + redirects to mock checkout in one click; delete before prod
+│       └── mock-checkout/
+│           └── route.ts    # Renders fake payment page with success/fail buttons that POST to the callback route
 ├── components/
 │   ├── Navbar.tsx          # Sticky nav — links to #how-it-works, #pricing; CTA → #pricing
 │   ├── Hero.tsx            # Above-fold hero — headline + two CTAs
@@ -52,7 +65,21 @@ mtd-portal/
 ├── lib/
 │   ├── utils.ts            # cn() utility
 │   ├── prisma.ts           # Singleton PrismaClient wired to the pg driver adapter
-│   └── generated/prisma/   # Auto-generated Prisma client — do not edit manually
+│   ├── generated/prisma/   # Auto-generated Prisma client — do not edit manually
+│   ├── email/
+│   │   └── index.ts        # sendActivationEmail — mocks or queues via Resend; fetches licenses and generates QR/token email
+│   ├── orders/
+│   │   └── fulfill.ts      # fulfillOrder — idempotent post-payment handler: provisions subscriptions/licenses then sends activation email
+│   ├── payment/
+│   │   ├── types.ts        # PaymentProvider interface + CreatePaymentInput/Result/CallbackResult types
+│   │   ├── mock.ts         # MockPaymentProvider — redirects to /mock-checkout for local testing
+│   │   ├── ipay88.ts       # IPay88Provider skeleton — not yet implemented
+│   │   └── index.ts        # getPaymentProvider() factory — returns mock or iPay88 based on PAYMENT_PROVIDER env
+│   └── provisioning/
+│       ├── types.ts        # ProvisioningProvider interface + ProvisionInput/ProvisionedLicense types
+│       ├── mock.ts         # MockProvisioningProvider — returns fake tokens/QR payloads for testing
+│       ├── zimperium.ts    # ZimperiumProvider skeleton — not yet implemented
+│       └── index.ts        # getProvisioningProvider() factory — returns mock or Zimperium based on PROVISIONING_PROVIDER env
 ├── prisma/
 │   ├── schema.prisma       # Database schema — source of truth for models/enums
 │   └── migrations/         # Applied migration SQL files (committed to git)
@@ -214,6 +241,10 @@ Always verify the golden path (page loads, primary CTAs work, pricing toggle wor
 ## Known TODOs / Stubs
 
 - `app/api/contact/route.ts` — currently only `console.log`s enquiries; needs email (e.g. Resend) or CRM integration
+- `lib/payment/ipay88.ts` — iPay88 payment provider skeleton; not yet implemented (set `PAYMENT_PROVIDER=mock` for local dev)
+- `lib/provisioning/zimperium.ts` — Zimperium license provisioning skeleton; not yet implemented (set `PROVISIONING_PROVIDER=mock` for local dev)
+- `lib/email/index.ts` — email sending is mocked; wire up Resend (or similar) for production
+- `app/api/dev/` — `seed/` and `demo/` routes are dev-only helpers; **delete before deploying to production**
 - WhatsApp link in Footer uses placeholder `wa.me/60XXXXXXXXX` — replace with real number
 - Terms of Service and Privacy Policy links are `href="#"` placeholders
 - `tests/home.spec.ts` lines 66–84 reference a non-existent Monthly/Annual toggle and need rewriting against the 1/2/3-Year term toggle (see Tests section)
