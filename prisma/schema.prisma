@@ -1,0 +1,394 @@
+// MTD Reseller Portal — Prisma schema
+// Translated from schema.sql, adjusted for PASSWORDLESS auth:
+//   - no passwordHash
+//   - `authId` links each profile row to the external auth provider
+//     (e.g. Supabase auth.users.id). Email is verified implicitly by OTP login.
+//
+// Prisma owns the database here: run `npx prisma migrate dev` and Prisma
+// creates the tables/enums for you (you do NOT also run schema.sql).
+//
+// Prisma 7: the datasource URL lives in `prisma.config.ts` (for the CLI/Migrate),
+// and the runtime client connects via a driver adapter — see `lib/prisma.ts`.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------------------------------------------------------------- enums
+enum AccountType {
+  individual
+  company
+}
+
+enum PlatformRole {
+  customer
+  admin
+  superadmin
+}
+
+enum EntityStatus {
+  active
+  inactive
+  suspended
+}
+
+enum OrderStatus {
+  draft
+  pending_payment
+  paid
+  cancelled
+  expired
+  refunded
+}
+
+enum PaymentStatus {
+  pending
+  succeeded
+  failed
+  refunded
+}
+
+enum SubStatus {
+  pending
+  active
+  expired
+  cancelled
+}
+
+enum LicenseStatus {
+  issued
+  sent
+  activated
+  revoked
+  expired
+}
+
+enum DocumentType {
+  invoice
+  receipt
+  credit_note
+}
+
+enum DiscountType {
+  percent
+  fixed
+}
+
+enum SubEventType {
+  create
+  renew
+  upgrade
+  downgrade
+  cancel
+  expire
+}
+
+// ---------------------------------------------------------------- identity
+model User {
+  id               String       @id @default(uuid()) @db.Uuid
+  authId           String?      @unique              // external auth provider id (passwordless)
+  email            String       @unique
+  mobileNumber     String?
+  firstName        String?
+  lastName         String?
+  accountType      AccountType  @default(individual)
+  role             PlatformRole @default(customer)   // single home for roles
+  status           EntityStatus @default(active)
+  taxId            String?
+  emailVerifiedAt  DateTime?                          // stamped on first OTP login
+  mobileVerifiedAt DateTime?
+  lastLoginAt      DateTime?
+  companyId        String?      @db.Uuid              // nullable FK = no junction table needed for MVP
+  company          Company?     @relation(fields: [companyId], references: [id])
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  companyMembers   CompanyMember[]
+  orders           Order[]
+  subscriptions    Subscription[]
+  promoRedemptions PromoRedemption[]
+  loginHistory     LoginHistory[]
+  auditLogs        AuditLog[]
+  emailLogs        EmailLog[]
+
+  @@index([companyId])
+}
+
+model Company {
+  id               String       @id @default(uuid()) @db.Uuid
+  name             String
+  businessRegNo    String?
+  taxId            String?
+  msicCode         String?
+  address          String?
+  contactPerson    String?
+  contactEmail     String?
+  contactPhone     String?
+  status           EntityStatus @default(active)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  users         User[]
+  members       CompanyMember[]
+  orders        Order[]
+  subscriptions Subscription[]
+}
+
+// OPTIONAL — only when one company needs multiple logins. Skip for MVP.
+model CompanyMember {
+  id        String   @id @default(uuid()) @db.Uuid
+  companyId String   @db.Uuid
+  userId    String   @db.Uuid
+  role      String   @default("member") // owner | admin | member
+  createdAt DateTime @default(now())
+  company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([companyId, userId])
+}
+
+// ---------------------------------------------------------------- catalog
+model Package {
+  id          String         @id @default(uuid()) @db.Uuid
+  name        String
+  description String?
+  tier        String?
+  status      EntityStatus   @default(active)
+  createdAt   DateTime       @default(now())
+  prices      PackagePrice[]
+}
+
+model PackagePrice {
+  id             String         @id @default(uuid()) @db.Uuid
+  packageId      String         @db.Uuid
+  durationMonths Int
+  currency       String         @default("MYR")
+  unitPrice      Decimal        @db.Decimal(18, 2)
+  status         EntityStatus   @default(active)
+  createdAt      DateTime       @default(now())
+  package        Package        @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  orderItems     OrderItem[]
+  subscriptions  Subscription[]
+
+  @@unique([packageId, durationMonths, currency])
+}
+
+// ---------------------------------------------------------------- promo
+model PromoCode {
+  id            String            @id @default(uuid()) @db.Uuid
+  code          String            @unique
+  description   String?
+  discountType  DiscountType
+  discountValue Decimal           @db.Decimal(18, 2)
+  minAmount     Decimal?          @db.Decimal(18, 2)
+  maxUses       Int?
+  usedCount     Int               @default(0)
+  perUserLimit  Int?              @default(1)
+  validFrom     DateTime?
+  validUntil    DateTime?
+  status        EntityStatus      @default(active)
+  createdAt     DateTime          @default(now())
+  redemptions   PromoRedemption[]
+  orders        Order[]
+}
+
+model PromoRedemption {
+  id               String    @id @default(uuid()) @db.Uuid
+  promoCodeId      String    @db.Uuid
+  userId           String    @db.Uuid
+  orderId          String?   @db.Uuid           // historical pointer, not a hard relation
+  amountDiscounted Decimal   @db.Decimal(18, 2)
+  redeemedAt       DateTime  @default(now())
+  promoCode        PromoCode @relation(fields: [promoCodeId], references: [id])
+  user             User      @relation(fields: [userId], references: [id])
+}
+
+// ---------------------------------------------------------------- orders
+model Order {
+  id              String       @id @default(uuid()) @db.Uuid
+  orderNo         String       @unique
+  userId          String       @db.Uuid
+  companyId       String?      @db.Uuid
+  status          OrderStatus  @default(draft)
+  currency        String       @default("MYR")
+  subtotal        Decimal      @default(0) @db.Decimal(18, 2)
+  discountTotal   Decimal      @default(0) @db.Decimal(18, 2)
+  taxTotal        Decimal      @default(0) @db.Decimal(18, 2)
+  grandTotal      Decimal      @default(0) @db.Decimal(18, 2)
+  promoCodeId     String?      @db.Uuid
+  billingSnapshot Json?                            // immutable billing details at sale time
+  referralSource  String?                          // which talk / channel drove the sale
+  createdAt       DateTime     @default(now())
+  expiresAt       DateTime?
+  paidAt          DateTime?
+
+  user          User           @relation(fields: [userId], references: [id])
+  company       Company?       @relation(fields: [companyId], references: [id])
+  promoCode     PromoCode?     @relation(fields: [promoCodeId], references: [id])
+  items         OrderItem[]
+  payments      Payment[]
+  documents     Document[]
+  subscriptions Subscription[]
+  emailLogs     EmailLog[]
+
+  @@index([userId])
+  @@index([status])
+}
+
+model OrderItem {
+  id                  String       @id @default(uuid()) @db.Uuid
+  orderId             String       @db.Uuid
+  packagePriceId      String       @db.Uuid
+  descriptionSnapshot String?
+  quantity            Int          @default(1)   // number of licenses/seats
+  unitPrice           Decimal      @db.Decimal(18, 2)
+  lineTotal           Decimal      @db.Decimal(18, 2)
+  order               Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  packagePrice        PackagePrice @relation(fields: [packagePriceId], references: [id])
+
+  @@index([orderId])
+}
+
+// ---------------------------------------------------------------- payments
+model Payment {
+  id            String         @id @default(uuid()) @db.Uuid
+  orderId       String         @db.Uuid
+  provider      String         @default("mock")   // 'mock' | 'ipay88'
+  amount        Decimal        @db.Decimal(18, 2)
+  currency      String         @default("MYR")
+  status        PaymentStatus  @default(pending)
+  method        String?
+  providerRef   String?                            // our ref to the gateway
+  providerTxnId String?                            // gateway's transaction id
+  signature     String?
+  rawResponse   Json?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  order         Order          @relation(fields: [orderId], references: [id])
+  events        PaymentEvent[]
+
+  @@index([orderId])
+  @@index([providerRef])
+}
+
+model PaymentEvent {
+  id             String   @id @default(uuid()) @db.Uuid
+  paymentId      String?  @db.Uuid
+  eventType      String?
+  payload        Json?
+  signatureValid Boolean?
+  receivedAt     DateTime @default(now())
+  dedupeKey      String   @unique                  // makes callbacks idempotent
+  payment        Payment? @relation(fields: [paymentId], references: [id])
+}
+
+// ---------------------------------------------------------------- documents
+model Document {
+  id             String       @id @default(uuid()) @db.Uuid
+  orderId        String       @db.Uuid
+  type           DocumentType
+  docNo          String       @unique
+  amount         Decimal      @db.Decimal(18, 2)
+  currency       String       @default("MYR")
+  issuedAt       DateTime     @default(now())
+  dueAt          DateTime?
+  filePath       String?
+  einvoiceUuid   String?                            // LHDN MyInvois hooks
+  einvoiceStatus String?
+  order          Order        @relation(fields: [orderId], references: [id])
+}
+
+// ---------------------------------------------------------------- subscriptions + licenses
+model Subscription {
+  id             String             @id @default(uuid()) @db.Uuid
+  userId         String             @db.Uuid
+  companyId      String?            @db.Uuid
+  orderId        String             @db.Uuid
+  packagePriceId String             @db.Uuid
+  status         SubStatus          @default(pending)
+  quantity       Int                @default(1)
+  startDate      DateTime?          @db.Date
+  endDate        DateTime?          @db.Date
+  autoRenew      Boolean            @default(false)
+  createdAt      DateTime           @default(now())
+  user           User               @relation(fields: [userId], references: [id])
+  company        Company?           @relation(fields: [companyId], references: [id])
+  order          Order              @relation(fields: [orderId], references: [id])
+  packagePrice   PackagePrice       @relation(fields: [packagePriceId], references: [id])
+  events         SubscriptionEvent[]
+  licenses       License[]
+
+  @@index([userId])
+}
+
+model SubscriptionEvent {
+  id                  String       @id @default(uuid()) @db.Uuid
+  subscriptionId      String       @db.Uuid
+  type                SubEventType
+  fromPackagePriceId  String?      @db.Uuid       // historical pointers, not hard relations
+  toPackagePriceId    String?      @db.Uuid
+  notes               String?
+  createdAt           DateTime     @default(now())
+  subscription        Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+}
+
+// THE CORE DELIVERABLE — one row per seat = the QR / activation link you email.
+model License {
+  id                    String        @id @default(uuid()) @db.Uuid
+  subscriptionId        String        @db.Uuid
+  activationToken       String        @unique
+  qrPayload             String?
+  status                LicenseStatus @default(issued)
+  assignedEmail         String?
+  zimperiumActivationId String?                        // filled by the real adapter later
+  zimperiumDeviceId     String?
+  activatedAt           DateTime?
+  expiresAt             DateTime?
+  createdAt             DateTime      @default(now())
+  subscription          Subscription  @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+
+  @@index([subscriptionId])
+  @@index([activationToken])
+}
+
+// ---------------------------------------------------------------- auth / audit / comms
+model LoginHistory {
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String?  @db.Uuid
+  loginTime  DateTime @default(now())
+  ipAddress  String?
+  deviceInfo String?
+  success    Boolean
+  user       User?    @relation(fields: [userId], references: [id])
+}
+
+model AuditLog {
+  id          String   @id @default(uuid()) @db.Uuid
+  actorUserId String?  @db.Uuid
+  action      String
+  entityType  String?
+  entityId    String?  @db.Uuid
+  oldValue    Json?
+  newValue    Json?
+  ipAddress   String?
+  createdAt   DateTime @default(now())
+  actor       User?    @relation(fields: [actorUserId], references: [id])
+}
+
+model EmailLog {
+  id                String    @id @default(uuid()) @db.Uuid
+  userId            String?   @db.Uuid
+  orderId           String?   @db.Uuid
+  type              String?
+  toEmail           String?
+  status            String?
+  providerMessageId String?
+  sentAt            DateTime?
+  user              User?     @relation(fields: [userId], references: [id])
+  order             Order?    @relation(fields: [orderId], references: [id])
+}
