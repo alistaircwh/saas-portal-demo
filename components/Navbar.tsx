@@ -4,15 +4,20 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
+import { createClient } from "@/lib/supabase/client";
 
+// Root-relative so the anchors resolve from any route (e.g. /login, /account),
+// not just the home page — they route home, then scroll to the section.
 const navLinks = [
-  { label: "How It Works", href: "#how-it-works" },
-  { label: "Pricing", href: "#pricing" },
+  { label: "How It Works", href: "/#how-it-works" },
+  { label: "Pricing", href: "/#pricing" },
 ];
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  // null = auth state not yet resolved; avoids flashing the wrong button.
+  const [signedIn, setSignedIn] = useState<boolean | null>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -20,6 +25,23 @@ export default function Navbar() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data }) => setSignedIn(!!data.user));
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSignedIn(!!session?.user);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const signOut = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    window.location.assign("/");
+  };
 
   return (
     <header
@@ -47,13 +69,38 @@ export default function Navbar() {
           ))}
         </nav>
 
-        <div className="hidden md:block">
-          <a
-            href="#pricing"
-            className={cn(buttonVariants({ variant: "default" }), "h-9 px-4 text-sm font-semibold")}
-          >
-            Subscribe Now
-          </a>
+        <div className="hidden md:flex items-center gap-6">
+          {signedIn === null ? null : signedIn ? (
+            <>
+              <Link
+                href="/account"
+                className="va-link-underline text-sm text-muted-foreground hover:text-primary transition-colors"
+              >
+                Account
+              </Link>
+              <button
+                onClick={signOut}
+                className="va-link-underline text-sm text-muted-foreground hover:text-primary transition-colors"
+              >
+                Sign out
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="va-link-underline text-sm text-muted-foreground hover:text-primary transition-colors"
+              >
+                Sign in
+              </Link>
+              <a
+                href="/#pricing"
+                className={cn(buttonVariants({ variant: "default" }), "h-9 px-4 text-sm font-semibold")}
+              >
+                Subscribe Now
+              </a>
+            </>
+          )}
         </div>
 
         <button
@@ -90,13 +137,43 @@ export default function Navbar() {
                 {link.label}
               </a>
             ))}
-            <a
-              href="#pricing"
-              className={cn(buttonVariants({ variant: "default" }), "h-9 px-4 text-sm font-semibold text-center")}
-              onClick={() => setOpen(false)}
-            >
-              Subscribe Now
-            </a>
+            {signedIn === null ? null : signedIn ? (
+              <>
+                <Link
+                  href="/account"
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                  onClick={() => setOpen(false)}
+                >
+                  Account
+                </Link>
+                <button
+                  onClick={() => {
+                    setOpen(false);
+                    signOut();
+                  }}
+                  className="text-left text-sm text-muted-foreground hover:text-primary transition-colors"
+                >
+                  Sign out
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                  onClick={() => setOpen(false)}
+                >
+                  Sign in
+                </Link>
+                <a
+                  href="/#pricing"
+                  className={cn(buttonVariants({ variant: "default" }), "h-9 px-4 text-sm font-semibold text-center")}
+                  onClick={() => setOpen(false)}
+                >
+                  Subscribe Now
+                </a>
+              </>
+            )}
           </div>
         </div>
       </div>
