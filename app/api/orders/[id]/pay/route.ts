@@ -26,7 +26,7 @@ export async function POST(
     currency: order.currency,
     customerEmail: order.user.email,
     customerName: [order.user.firstName, order.user.lastName].filter(Boolean).join(" "),
-    returnUrl: `${base}/orders/${order.id}`,
+    returnUrl: `${base}/payment-complete?orderId=${order.id}`,
     callbackUrl: `${base}/api/payments/callback`,
   });
 
