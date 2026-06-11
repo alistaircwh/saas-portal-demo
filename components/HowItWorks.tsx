@@ -1,5 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import Reveal from "@/components/Reveal";
+import SectionHeading from "@/components/SectionHeading";
 
 const steps = [
   {
@@ -13,7 +14,7 @@ const steps = [
       </svg>
     ),
     title: "Choose your plan",
-    description: "Pick the tier that fits you — Personal, Family, or Business. No hidden fees, no complicated setup.",
+    description: "Pick the tier that fits you: Personal, Family, or Business. No hidden fees, no complicated setup.",
   },
   {
     number: "02",
@@ -24,7 +25,7 @@ const steps = [
       </svg>
     ),
     title: "We email your QR code",
-    description: "Within minutes of subscribing, your personalised QR code lands in your inbox — ready to use.",
+    description: "Within minutes of subscribing, your personalised QR code lands in your inbox, ready to use.",
   },
   {
     number: "03",
@@ -36,22 +37,20 @@ const steps = [
       </svg>
     ),
     title: "Scan and you're protected",
-    description: "Open your phone camera, scan the QR code, and Vigilant Asia MTD activates instantly — no IT team needed.",
+    description: "Open your phone camera, scan the QR code, and Vigilant Asia MTD activates instantly, no IT team needed.",
   },
 ];
 
 export default function HowItWorks() {
   return (
-    <section id="how-it-works" className="py-20 bg-card">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-14">
-          <Reveal>
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">How it works</h2>
-          </Reveal>
-          <Reveal delay={80}>
-            <p className="text-muted-foreground text-lg max-w-xl mx-auto">Three steps from payment to protected. That&apos;s it.</p>
-          </Reveal>
-        </div>
+    <section id="how-it-works" className="va-divider-top py-24 md:py-28 bg-card">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <SectionHeading
+          eyebrow="Getting started"
+          title="From payment to protected in three steps"
+          subtitle="No IT team, no complicated setup. That's it."
+          className="mb-16"
+        />
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {steps.map((step, i) => (

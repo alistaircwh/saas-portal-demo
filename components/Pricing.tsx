@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import Reveal from "@/components/Reveal";
+import SectionHeading from "@/components/SectionHeading";
 
 const tiers = [
   {
@@ -75,17 +76,15 @@ export default function Pricing() {
   }, [years]);
 
   return (
-    <section id="pricing" className="py-20 bg-background">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <Reveal>
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Simple, transparent pricing</h2>
-          </Reveal>
-          <Reveal delay={80}>
-            <p className="text-muted-foreground text-lg max-w-xl mx-auto mb-8">
-              Choose the plan that fits you. Longer commitment, lower annual rate.
-            </p>
-          </Reveal>
+    <section id="pricing" className="va-divider-top py-24 md:py-28 bg-background">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="text-center mb-10">
+          <SectionHeading
+            eyebrow="Pricing"
+            title="Simple, transparent pricing"
+            subtitle="Choose the plan that fits you. Longer commitment, lower annual rate."
+            className="mb-8"
+          />
 
           <Reveal delay={160}>
             <div className="relative inline-flex items-center gap-1 p-1 rounded-full bg-card border border-border">

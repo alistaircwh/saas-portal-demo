@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 function formatDate(d: Date | null | undefined) {
-  if (!d) return "—";
+  if (!d) return "-";
   return new Intl.DateTimeFormat("en-MY", { dateStyle: "medium", timeStyle: "short" }).format(d);
 }
 
@@ -23,6 +23,9 @@ export default async function AccountPage() {
   const profile = await prisma.user.findUnique({
     where: { email: user.email!.toLowerCase() },
   });
+  // A valid session with no `User` row means an unregistered address slipped
+  // past the login gate — turn them away rather than render a hollow page.
+  if (!profile) redirect("/login?next=/account");
 
   const displayName = [profile?.firstName, profile?.lastName].filter(Boolean).join(" ") || "there";
 

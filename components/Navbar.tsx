@@ -9,7 +9,8 @@ import { createClient } from "@/lib/supabase/client";
 // Root-relative so the anchors resolve from any route (e.g. /login, /account),
 // not just the home page — they route home, then scroll to the section.
 const navLinks = [
-  { label: "How It Works", href: "/#how-it-works" },
+  { label: "Why MTD", href: "/#what-is-mtd" },
+  { label: "How It Works", href: "/#how-protection-works" },
   { label: "Pricing", href: "/#pricing" },
 ];
 

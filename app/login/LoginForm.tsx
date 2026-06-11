@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { syncCurrentUser } from "./actions";
+import { requestLoginCode, syncCurrentUser } from "./actions";
 
 type Step = "email" | "code";
 type Status = "idle" | "working";
@@ -32,13 +32,11 @@ export default function LoginForm({ next }: { next: string }) {
     e.preventDefault();
     setError(null);
     setStatus("working");
-    const { error } = await supabase.auth.signInWithOtp({
-      email: email.trim().toLowerCase(),
-      options: { shouldCreateUser: true },
-    });
+    // Gated server-side: only emails already in our `User` table get a code.
+    const result = await requestLoginCode(email);
     setStatus("idle");
-    if (error) {
-      setError(error.message);
+    if (!result.ok) {
+      setError(result.error);
       return;
     }
     setStep("code");
@@ -93,7 +91,7 @@ export default function LoginForm({ next }: { next: string }) {
                 className="h-10"
               />
               <p className="text-muted-foreground text-xs mt-2">
-                We&apos;ll email you a one-time code — no password needed.
+                We&apos;ll email you a one-time code, no password needed.
               </p>
             </div>
 

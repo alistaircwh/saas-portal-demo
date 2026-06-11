@@ -4,27 +4,32 @@ import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import Reveal from "@/components/Reveal";
+import SectionHeading from "@/components/SectionHeading";
 
 const faqs = [
   {
-    q: "How fast do I get my QR code?",
-    a: "Your QR code is emailed within minutes of a successful subscription. Most people receive it before they leave the venue. Check your spam folder if it doesn't arrive within 10 minutes.",
+    q: "Does Mobile Threat Defence work on iPhone and Android devices?",
+    a: "Absolutely! Whether you're on iPhone or Android, you're fully covered no matter which device your team or family uses.",
   },
   {
-    q: "Can I use it on multiple devices?",
-    a: "Yes — the Personal plan covers 1 device, the Family plan covers up to 5 devices, and the Business plan covers up to 20. Each device gets its own activation via the same QR code.",
+    q: "Will it slow down my phone?",
+    a: "Not at all! The app is engineered to run quietly in the background without draining your battery or slowing anything down. You won't even notice it's there.",
   },
   {
-    q: "What if I need help setting up?",
-    a: "We offer free setup support via WhatsApp. Just message us after subscribing and our team will walk you through it — typically under 5 minutes.",
+    q: "Can it read my personal messages?",
+    a: "No way! The app focuses entirely on detecting threats. Your personal messages, photos, and files are completely off-limits. Your privacy is always protected.",
   },
   {
-    q: "How do I cancel?",
-    a: "You can cancel anytime by emailing hello@vigilantasia.com or messaging us on WhatsApp. No cancellation fees. Your protection stays active until the end of your billing period.",
+    q: "Do I need to keep the app open?",
+    a: "Nope! Once it's installed, protection runs automatically in the background 24/7. No babysitting required. Set it and forget it!",
   },
   {
-    q: "Is my data private?",
-    a: "Vigilant Asia MTD monitors threats at the network and app layer — it does not read your messages, photos, or personal files. Your data never leaves your device. We are fully PDPA compliant.",
+    q: "What happens if a threat is detected?",
+    a: "You'll get an instant alert that explains exactly what was detected and what to do next. It's clear, calm, and actionable. You'll always know you're in good hands!",
+  },
+  {
+    q: "Can I use it for personal and business devices?",
+    a: "Absolutely! Whether it's your personal phone or a company device, you're covered. Our Family and Business plans make it easy to protect everyone at once, and great value too!",
   },
 ];
 
@@ -32,16 +37,14 @@ export default function FAQAccordion() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section id="faq" className="py-20 bg-background">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-14">
-          <Reveal>
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Common questions</h2>
-          </Reveal>
-          <Reveal delay={80}>
-            <p className="text-muted-foreground text-lg">Everything you need to know before subscribing.</p>
-          </Reveal>
-        </div>
+    <section id="faq" className="va-divider-top py-24 md:py-28 bg-background">
+      <div className="max-w-3xl mx-auto px-6 lg:px-8">
+        <SectionHeading
+          eyebrow="FAQ"
+          title="Common questions"
+          subtitle="Everything you need to know about the app and getting started."
+          className="mb-14"
+        />
 
         <div className="space-y-3">
           {faqs.map((faq, i) => {

@@ -8,8 +8,8 @@ export const metadata: Metadata = {
 
 const reasons = [
   { icon: "💬", title: "Get a Free Quote", desc: "Tell us how many phones you need to protect and we'll send you a simple, no-obligation quote." },
-  { icon: "🖥️", title: "See a Live Demo", desc: "Watch us detect a real threat on a real phone — takes 20 minutes and there's no commitment." },
-  { icon: "❓", title: "Ask Us Anything", desc: "Not sure if you need this? Have a specific concern? Just ask — we're happy to chat through it." },
+  { icon: "🖥️", title: "See a Live Demo", desc: "Watch us detect a real threat on a real phone. It takes 20 minutes and there's no commitment." },
+  { icon: "❓", title: "Ask Us Anything", desc: "Not sure if you need this? Have a specific concern? Just ask, we're happy to chat through it." },
   { icon: "🚀", title: "Get Set Up Today", desc: "Already decided? We can have your whole team protected within the same business day." },
 ];
 
@@ -54,7 +54,7 @@ export default function ContactPage() {
                 <ul className="space-y-2.5">
                   {[
                     "We reply within 1 business day",
-                    "A friendly conversation — no sales pressure",
+                    "A friendly conversation, no sales pressure",
                     "We tailor a recommendation to your business size",
                     "You can try before you commit",
                   ].map((item) => (

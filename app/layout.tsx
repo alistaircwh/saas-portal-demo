@@ -12,7 +12,7 @@ const geistSans = Geist({
 export const metadata: Metadata = {
   title: "Vigilant Asia | Enterprise Mobile Threat Defense",
   description:
-    "Protect your enterprise iOS, Android & ChromeOS devices from advanced mobile threats with Vigilant Asia Mobile Threat Defense — on-device AI, offline protection, privacy-first.",
+    "Protect your enterprise iOS, Android & ChromeOS devices from advanced mobile threats with Vigilant Asia Mobile Threat Defense: on-device AI, offline protection, privacy-first.",
 };
 
 export default function RootLayout({

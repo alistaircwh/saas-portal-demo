@@ -17,9 +17,9 @@ function safeNext(next: string | undefined): string {
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ next?: string }>;
+  searchParams: Promise<{ next?: string; reason?: string }>;
 }) {
-  const { next } = await searchParams;
+  const { next, reason } = await searchParams;
   const target = safeNext(next);
 
   const supabase = await createClient();
@@ -35,6 +35,11 @@ export default async function LoginPage({
           <h1 className="text-3xl font-bold text-white mb-2">Welcome back</h1>
           <p className="text-stone-400">Sign in to manage your subscription and licenses.</p>
         </div>
+        {reason === "timeout" && (
+          <p className="mb-4 text-sm text-stone-300 bg-card/60 border border-border rounded-md px-4 py-3 text-center">
+            You were signed out after a period of inactivity. Please sign in again.
+          </p>
+        )}
         <LoginForm next={target} />
       </div>
     </section>
