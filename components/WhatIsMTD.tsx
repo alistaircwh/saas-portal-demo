@@ -1,3 +1,4 @@
+import CheckIcon from "@/components/CheckIcon";
 import Reveal from "@/components/Reveal";
 import SectionHeading from "@/components/SectionHeading";
 import Tabs, { type TabItem } from "@/components/Tabs";
@@ -14,9 +15,7 @@ const benefits = [
 function CheckItem({ children }: { children: React.ReactNode }) {
   return (
     <li className="flex items-start gap-2.5 text-sm text-muted-foreground">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-primary shrink-0 mt-0.5">
-        <path d="M3 8l3.5 3.5L13 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
+      <CheckIcon className="mt-0.5" />
       {children}
     </li>
   );
@@ -132,8 +131,8 @@ export default function WhatIsMTD() {
 
         <div className="text-center mb-8">
           <Reveal>
-            <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
-              Comprehensive protection against every angle
+            <h3 className="text-2xl md:text-3xl font-light text-foreground mb-3">
+              <span className="text-primary">Comprehensive</span> protection against every angle
             </h3>
           </Reveal>
           <Reveal delay={80}>

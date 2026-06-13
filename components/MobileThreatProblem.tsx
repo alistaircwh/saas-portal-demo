@@ -51,7 +51,7 @@ const threats = [
 
 export default function MobileThreatProblem() {
   return (
-    <section id="threats" className="va-divider-top py-24 md:py-28 bg-card">
+    <section id="threats" className="va-divider-top py-24 md:py-28 bg-background">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <SectionHeading
           eyebrow="The threat"
@@ -63,12 +63,12 @@ export default function MobileThreatProblem() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {threats.map((t, i) => (
             <Reveal key={t.title} delay={i * 60} className="h-full">
-              <Card className="bg-background h-full">
+              <Card className="h-full">
                 <CardContent className="flex flex-col items-center text-center p-6">
-                  <div className="mb-4 p-3 rounded-xl bg-primary/10 border border-primary/20">
+                  <div className="mb-4 p-3 rounded-lg bg-primary/10 border border-primary/20">
                     {t.icon}
                   </div>
-                  <h3 className="text-foreground font-semibold text-base mb-2">{t.title}</h3>
+                  <h3 className="text-foreground font-medium text-base mb-2">{t.title}</h3>
                   <p className="text-muted-foreground text-sm leading-relaxed">{t.description}</p>
                 </CardContent>
               </Card>

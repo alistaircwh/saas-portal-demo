@@ -53,7 +53,7 @@ export default function FAQAccordion() {
               <Reveal key={i} delay={i * 50}>
                 <Card className="overflow-hidden">
                   <button
-                    className="w-full flex items-center justify-between px-6 py-5 text-left transition-colors duration-[var(--dur-fast)] hover:bg-foreground/[0.02]"
+                    className="w-full flex items-center justify-between px-6 py-5 text-left transition-colors duration-[var(--dur-fast)] hover:bg-foreground/[0.04]"
                     onClick={() => setOpenIndex(isOpen ? null : i)}
                     aria-expanded={isOpen}
                   >

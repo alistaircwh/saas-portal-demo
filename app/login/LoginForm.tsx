@@ -97,7 +97,7 @@ export default function LoginForm({ next }: { next: string }) {
 
             {error && <p className="text-destructive text-sm">{error}</p>}
 
-            <Button type="submit" disabled={status === "working"} className="w-full h-11 text-sm font-semibold">
+            <Button type="submit" disabled={status === "working"} className="w-full h-11 text-sm font-medium">
               {status === "working" ? (
                 <>
                   <Spinner />
@@ -142,7 +142,7 @@ export default function LoginForm({ next }: { next: string }) {
 
             {error && <p className="text-destructive text-sm">{error}</p>}
 
-            <Button type="submit" disabled={status === "working"} className="w-full h-11 text-sm font-semibold">
+            <Button type="submit" disabled={status === "working"} className="w-full h-11 text-sm font-medium">
               {status === "working" ? (
                 <>
                   <Spinner />

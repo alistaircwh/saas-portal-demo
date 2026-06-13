@@ -4,6 +4,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
+import CheckIcon from "@/components/CheckIcon";
 import Reveal from "@/components/Reveal";
 import SectionHeading from "@/components/SectionHeading";
 
@@ -91,7 +92,7 @@ export default function Pricing() {
               {pill && (
                 <span
                   aria-hidden="true"
-                  className="absolute top-1 bottom-1 rounded-full bg-primary transition-[left,width] duration-[var(--dur-standard)] ease-[var(--ease-premium)] shadow-[0_8px_24px_-12px_var(--primary)]"
+                  className="absolute top-1 bottom-1 rounded-full bg-primary transition-[left,width] duration-[var(--dur-standard)] ease-[var(--ease-premium)]"
                   style={{ left: `${pill.left}px`, width: `${pill.width}px` }}
                 />
               )}
@@ -114,10 +115,10 @@ export default function Pricing() {
                     {opt.badge && (
                       <span
                         className={cn(
-                          "text-xs font-semibold px-1.5 py-0.5 rounded-full transition-colors duration-[var(--dur-fast)]",
+                          "text-xs font-medium px-1.5 py-0.5 rounded-full transition-colors duration-[var(--dur-fast)]",
                           active
-                            ? "bg-primary-foreground/30 text-primary-foreground"
-                            : "bg-primary/20 text-primary",
+                            ? "bg-primary-foreground/20 text-primary-foreground"
+                            : "bg-primary/10 text-primary",
                         )}
                       >
                         {opt.badge}
@@ -143,7 +144,7 @@ export default function Pricing() {
                       <span
                         className={cn(
                           buttonVariants({ variant: "default" }),
-                          "h-7 px-4 text-xs font-bold uppercase tracking-wider rounded-full pointer-events-none",
+                          "h-7 px-4 text-xs font-medium uppercase tracking-wider pointer-events-none",
                         )}
                       >
                         Most Popular
@@ -154,7 +155,7 @@ export default function Pricing() {
                   <Card
                     className={cn(
                       "flex flex-col h-full p-0",
-                      tier.popular && "border-2 border-primary bg-primary/10",
+                      tier.popular && "ring-primary/70 bg-primary/[0.05]",
                     )}
                     style={
                       tier.popular
@@ -164,12 +165,12 @@ export default function Pricing() {
                   >
                     <CardContent className="flex flex-col flex-1 p-8 gap-0">
                       <div className="mb-6">
-                        <h3 className="text-foreground font-bold text-xl mb-4">{tier.name}</h3>
+                        <h3 className="text-foreground font-medium text-xl mb-4">{tier.name}</h3>
                         <div className="flex items-end gap-1">
                           <span className="text-muted-foreground text-sm">RM</span>
                           <span
                             key={years}
-                            className="text-4xl font-bold text-foreground inline-block animate-in fade-in-0 zoom-in-95 duration-200"
+                            className="text-5xl font-light tracking-tight text-foreground inline-block animate-in fade-in-0 zoom-in-95 duration-200"
                           >
                             {pricePerYear}
                           </span>
@@ -188,21 +189,7 @@ export default function Pricing() {
                       <ul className="space-y-3 mb-8 flex-1">
                         {tier.features.map((f) => (
                           <li key={f} className="flex items-start gap-2.5 text-sm text-muted-foreground">
-                            <svg
-                              width="16"
-                              height="16"
-                              viewBox="0 0 16 16"
-                              fill="none"
-                              className="text-primary shrink-0 mt-0.5"
-                            >
-                              <path
-                                d="M3 8l3.5 3.5L13 4.5"
-                                stroke="currentColor"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
+                            <CheckIcon className="mt-0.5" />
                             {f}
                           </li>
                         ))}
@@ -214,7 +201,7 @@ export default function Pricing() {
                           tier.popular
                             ? buttonVariants({ variant: "default" })
                             : buttonVariants({ variant: "outline" }),
-                          "w-full h-11 text-sm font-semibold",
+                          "w-full h-11 text-sm font-medium",
                         )}
                       >
                         Subscribe Now

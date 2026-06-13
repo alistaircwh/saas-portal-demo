@@ -10,7 +10,7 @@ import { prisma } from "@/lib/prisma";
 async function render(orderId: string | null) {
   let heading = "Thank you";
   let message =
-    "We've received your payment request. You'll get an activation email once it's confirmed — this usually only takes a moment.";
+    "We've received your payment request. You'll get an activation email once it's confirmed. This usually only takes a moment.";
 
   if (orderId) {
     const order = await prisma.order
@@ -33,29 +33,30 @@ async function render(orderId: string | null) {
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>${heading} — Vigilant Asia</title>
+<title>${heading} | Vigilant Asia</title>
 <style>
   :root { color-scheme: dark; }
   * { box-sizing: border-box; }
   body {
     margin: 0; min-height: 100vh; display: grid; place-items: center;
-    background: #080808; color: #fafafa;
+    background: #200f0a; color: #fcfaf9;
     font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-weight: 500; letter-spacing: 0.01em;
     padding: 24px;
   }
   .card {
     max-width: 460px; width: 100%; text-align: center;
-    background: #111016; border: 1px solid rgba(250,250,250,0.08);
-    border-radius: 16px; padding: 40px 32px;
+    background: #2b2538; border: 1px solid rgba(227,204,192,0.22);
+    border-radius: 8px; padding: 40px 32px;
   }
-  h1 { font-size: 1.5rem; margin: 0 0 12px; }
-  p { color: rgba(250,250,250,0.7); line-height: 1.6; margin: 0 0 28px; }
+  h1 { font-size: 1.75rem; font-weight: 300; margin: 0 0 12px; }
+  p { color: #a69f9d; line-height: 1.6; margin: 0 0 28px; }
   a.btn {
     display: inline-block; text-decoration: none;
-    background: #C41E1E; color: #fff; font-weight: 600;
-    padding: 12px 24px; border-radius: 10px;
+    background: #e63329; color: #fcfaf9; font-weight: 500;
+    padding: 12px 24px; border-radius: 9999px;
   }
-  .brand { color: #C41E1E; font-weight: 700; letter-spacing: 0.02em; margin-bottom: 24px; }
+  .brand { color: #e63329; font-weight: 500; letter-spacing: 0.06em; margin-bottom: 24px; }
 </style>
 </head>
 <body>

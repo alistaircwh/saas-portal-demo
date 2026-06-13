@@ -100,38 +100,37 @@ const whyChoose = [
 
 export default function Awards() {
   return (
-    <section className="va-divider-top py-24 md:py-28 bg-[#0D0A0A]">
+    <section className="va-divider-top py-24 md:py-28 bg-background">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <SectionHeading
           eyebrow="Why trust us"
           title="Don't just take our word for it"
           subtitle="Why businesses worldwide rely on Vigilant Asia MTD."
-          tone="light"
           className="mb-14"
         />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {awards.map((a, i) => (
             <Reveal key={a.title} delay={i * 60} className="h-full">
-              <div className="group bg-[#130E0E] border border-white/10 rounded-2xl p-6 h-full transition-[border-color,transform,box-shadow] duration-[var(--dur-standard)] ease-[var(--ease-premium)] hover:border-[#C41E1E]/40 hover:-translate-y-0.5 hover:shadow-[0_12px_32px_-16px_rgba(196,30,30,0.35)]">
-                <div className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 text-primary">
+              <div className="group bg-card border border-border rounded-lg p-6 h-full transition-[border-color,transform] duration-[var(--dur-standard)] ease-[var(--ease-premium)] hover:border-primary/40 hover:-translate-y-0.5">
+                <div className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-primary">
                   <a.Icon />
                 </div>
-                <h3 className="text-white font-semibold mb-2">{a.title}</h3>
-                <p className="text-stone-400 text-sm leading-6">{a.detail}</p>
+                <h3 className="text-foreground font-medium mb-2">{a.title}</h3>
+                <p className="text-muted-foreground text-sm leading-6">{a.detail}</p>
               </div>
             </Reveal>
           ))}
         </div>
 
         <Reveal>
-          <div className="mt-24 rounded-3xl border border-primary/20 bg-gradient-to-b from-[#1A0D0D] to-[#130E0E] p-8 md:p-12 shadow-[0_24px_64px_-32px_rgba(196,30,30,0.4)]">
+          <div className="mt-24 rounded-lg border border-border bg-card p-8 md:p-12">
             <div className="text-center max-w-xl mx-auto mb-10">
               <img src="/logo.svg" alt="Vigilant Asia" className="h-10 w-auto mx-auto mb-6" />
-              <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">
-                Why Malaysian businesses choose us
+              <h3 className="text-2xl md:text-3xl font-light text-foreground mb-3">
+                <span className="text-primary">Why</span> Malaysian businesses choose us
               </h3>
-              <p className="text-stone-400">
+              <p className="text-muted-foreground">
                 Vigilant Asia is an award-winning cybersecurity provider. You get global-grade
                 technology delivered with local expertise and support you can actually reach.
               </p>
@@ -140,9 +139,9 @@ export default function Awards() {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
               {whyChoose.map((w, i) => (
                 <Reveal key={w.title} delay={i * 60} className="h-full">
-                  <div className="bg-[#0D0A0A]/70 border border-white/10 rounded-2xl p-6 h-full transition-[border-color,transform,box-shadow] duration-[var(--dur-standard)] ease-[var(--ease-premium)] hover:border-[#C41E1E]/40 hover:-translate-y-0.5 hover:shadow-[0_12px_32px_-16px_rgba(196,30,30,0.35)]">
-                    <h4 className="text-white font-semibold mb-2">{w.title}</h4>
-                    <p className="text-stone-400 text-sm leading-6">{w.detail}</p>
+                  <div className="bg-muted/40 border border-border rounded-lg p-6 h-full transition-[border-color,transform] duration-[var(--dur-standard)] ease-[var(--ease-premium)] hover:border-primary/40 hover:-translate-y-0.5">
+                    <h4 className="text-foreground font-medium mb-2">{w.title}</h4>
+                    <p className="text-muted-foreground text-sm leading-6">{w.detail}</p>
                   </div>
                 </Reveal>
               ))}

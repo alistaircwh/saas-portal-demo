@@ -12,15 +12,14 @@ const trustSignals = [
 export default function Hero() {
   return (
     <section id="hero" className="relative overflow-hidden py-20 md:py-28 lg:py-32">
-      <div className="absolute inset-0 bg-gradient-to-br from-card via-background to-[#080808]" />
       <div
         className="absolute inset-0"
         style={{
-          backgroundImage: "radial-gradient(circle, #C41E1E 0%, transparent 55%)",
+          backgroundImage: "radial-gradient(circle, #e63329 0%, transparent 65%)",
           backgroundSize: "90% 90%",
           backgroundRepeat: "no-repeat",
           backgroundPosition: "70% 25%",
-          opacity: 0.22,
+          opacity: 0.08,
           animation: "va-glow-drift 12s ease-in-out infinite",
         }}
       />
@@ -29,22 +28,19 @@ export default function Hero() {
         <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8">
           <div className="max-w-xl">
             <Reveal delay={0}>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium mb-6">
-                <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                Trusted by businesses across Malaysia · Powered by Zimperium
+              <div className="va-overline mb-6 text-xs text-muted-foreground">
+                Trusted across Malaysia · Powered by Zimperium
               </div>
             </Reveal>
 
             <Reveal delay={80}>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-[1.05] tracking-tight mb-6 text-balance">
-                Everything important is on your phone.
-                <br />
-                <span className="text-primary">Make sure only you can access it.</span>
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-light text-foreground leading-[1.1] mb-6 text-balance">
+                <span className="text-primary">Everything</span> important is on your phone. Make sure only you can access it.
               </h1>
             </Reveal>
 
             <Reveal delay={160}>
-              <p className="text-lg md:text-xl text-muted-foreground leading-relaxed mb-8 max-w-xl text-pretty">
+              <p className="text-lg text-muted-foreground leading-relaxed mb-8 max-w-md text-pretty">
                 Hackers target phones more than computers, and most people don&apos;t know until it&apos;s too late. Vigilant Asia MTD protects you silently in the background. Setup takes less than a minute.
               </p>
             </Reveal>
@@ -53,13 +49,13 @@ export default function Hero() {
               <div className="flex flex-col sm:flex-row gap-4">
                 <a
                   href="#pricing"
-                  className={cn(buttonVariants({ variant: "default" }), "h-11 px-6 text-sm font-semibold")}
+                  className={cn(buttonVariants({ variant: "default" }), "h-11 px-6 text-sm font-medium")}
                 >
                   Subscribe Now
                 </a>
                 <a
                   href="#how-it-works"
-                  className={cn(buttonVariants({ variant: "outline" }), "h-11 px-6 text-sm font-semibold")}
+                  className={cn(buttonVariants({ variant: "outline" }), "h-11 px-6 text-sm font-medium")}
                 >
                   See How It Works
                 </a>
@@ -67,11 +63,11 @@ export default function Hero() {
             </Reveal>
 
             <Reveal delay={300}>
-              <div className="mt-8 flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-white/[0.06] pt-6">
+              <div className="mt-8 flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-border pt-6">
                 {trustSignals.map((signal, i) => (
                   <span key={signal} className="flex items-center gap-3">
-                    {i > 0 && <span className="h-1 w-1 rounded-full bg-stone-700" />}
-                    <span className="text-stone-500 text-xs">{signal}</span>
+                    {i > 0 && <span className="h-1 w-1 rounded-full bg-muted-foreground/40" />}
+                    <span className="text-muted-foreground text-xs">{signal}</span>
                   </span>
                 ))}
               </div>

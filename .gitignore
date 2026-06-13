@@ -39,6 +39,13 @@ dev-server.log
 # local mcp config (machine-specific paths)
 .mcp.json
 
+# playwright mcp scratch output (console logs, page snapshots, screenshots)
+.playwright-mcp/
+/threatvisual-vault.png
+
+# design reference doc — not needed for the site to build/run
+DESIGN.md
+
 # env files (can opt-in for committing if needed)
 .env*
 

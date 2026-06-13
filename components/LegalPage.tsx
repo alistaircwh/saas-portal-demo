@@ -13,19 +13,19 @@ export default function LegalPage({
 }) {
   return (
     <div>
-      <section className="py-20 bg-gradient-to-br from-[#130E0E] via-[#0D0A0A] to-[#0A0808]">
+      <section className="py-20 bg-card border-b border-border">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">{title}</h1>
-          {subtitle && <p className="text-stone-300 text-lg max-w-xl">{subtitle}</p>}
+          <h1 className="text-4xl md:text-5xl font-light text-foreground mb-4">{title}</h1>
+          {subtitle && <p className="text-muted-foreground text-lg max-w-xl">{subtitle}</p>}
           {lastUpdated && (
-            <p className="text-stone-400 text-sm mt-4">Last updated: {lastUpdated}</p>
+            <p className="text-muted-foreground text-sm mt-4">Last updated: {lastUpdated}</p>
           )}
         </div>
       </section>
 
       <section className="py-16 bg-background">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="va-legal space-y-8 text-stone-300 leading-7">{children}</div>
+          <div className="va-legal space-y-8 text-foreground/80 leading-7">{children}</div>
         </div>
       </section>
     </div>
@@ -41,8 +41,8 @@ export function LegalSection({
 }) {
   return (
     <div className="space-y-3">
-      <h2 className="text-xl font-semibold text-white">{heading}</h2>
-      <div className="space-y-3 text-stone-300 leading-7">{children}</div>
+      <h2 className="text-xl font-medium text-foreground">{heading}</h2>
+      <div className="space-y-3 text-foreground/80 leading-7">{children}</div>
     </div>
   );
 }

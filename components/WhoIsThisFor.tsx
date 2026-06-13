@@ -36,11 +36,11 @@ export default function WhoIsThisFor() {
             <Reveal key={p.title} delay={i * 60} className="h-full">
               <Card className="bg-card h-full">
                 <CardContent className="flex gap-5 p-6">
-                  <span className="font-mono text-sm font-semibold text-primary/70 tabular-nums pt-0.5">
+                  <span className="font-mono font-light text-sm text-primary/80 tabular-nums pt-0.5">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <div>
-                    <h3 className="text-foreground font-semibold text-lg mb-2">{p.title}</h3>
+                    <h3 className="text-foreground font-medium text-lg mb-2">{p.title}</h3>
                     <p className="text-muted-foreground text-sm leading-relaxed">{p.description}</p>
                   </div>
                 </CardContent>

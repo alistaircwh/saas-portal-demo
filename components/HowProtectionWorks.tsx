@@ -34,7 +34,7 @@ const flow = [
 
 export default function HowProtectionWorks() {
   return (
-    <section id="how-protection-works" className="va-divider-top py-24 md:py-28 bg-card">
+    <section id="how-protection-works" className="va-divider-top py-24 md:py-28 bg-background">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <SectionHeading
           eyebrow="How it works"
@@ -52,10 +52,10 @@ export default function HowProtectionWorks() {
           {steps.map((step, i) => (
             <Reveal key={step.number} delay={i * 90} as="li" className="relative">
               <div className="flex items-center gap-4 lg:flex-col lg:items-start lg:gap-0">
-                <span className="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-primary/30 bg-background font-bold text-primary shadow-[0_0_0_6px_var(--color-card)]">
+                <span className="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-primary/30 bg-background font-mono font-light text-primary shadow-[0_0_0_6px_var(--color-background)]">
                   {step.number}
                 </span>
-                <h3 className="text-foreground font-semibold text-lg lg:mt-5">{step.title}</h3>
+                <h3 className="text-foreground font-medium text-lg lg:mt-5">{step.title}</h3>
               </div>
               <p className="mt-2 text-muted-foreground text-sm leading-relaxed lg:pr-4">
                 {step.description}
@@ -65,15 +65,15 @@ export default function HowProtectionWorks() {
         </ol>
 
         <Reveal>
-          <div className="max-w-3xl mx-auto rounded-2xl border border-border bg-background p-8">
-            <h3 className="text-center text-foreground font-semibold text-lg mb-6">
+          <div className="max-w-3xl mx-auto rounded-lg border border-border bg-secondary/50 p-8">
+            <h3 className="text-center text-foreground font-medium text-lg mb-6">
               See a threat before it becomes an incident
             </h3>
             <ol className="flex flex-col sm:flex-row sm:flex-wrap items-stretch justify-center gap-3">
               {flow.map((step, i) => (
                 <li key={step} className="flex items-center gap-3 sm:flex-col sm:gap-2 sm:flex-1 sm:min-w-[120px]">
                   <span
-                    className="flex-1 sm:flex-none sm:w-full text-center rounded-xl border border-white/10 bg-background px-3 py-2.5 text-sm font-medium text-foreground"
+                    className="flex-1 sm:flex-none sm:w-full text-center rounded-lg border border-border bg-card px-3 py-2.5 text-sm font-medium text-foreground"
                     style={{
                       animation: `va-flow-pulse ${flow.length * 0.9}s var(--ease-premium) infinite`,
                       animationDelay: `${i * 0.9}s`,
@@ -87,7 +87,7 @@ export default function HowProtectionWorks() {
                       height="18"
                       viewBox="0 0 24 24"
                       fill="none"
-                      className="shrink-0 rotate-90 text-white/20 sm:rotate-0"
+                      className="shrink-0 rotate-90 text-foreground/25 sm:rotate-0"
                       style={{
                         animation: `va-flow-arrow ${flow.length * 0.9}s var(--ease-premium) infinite`,
                         animationDelay: `${i * 0.9 + 0.45}s`,

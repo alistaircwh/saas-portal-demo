@@ -49,7 +49,7 @@ export default function Navbar() {
       className={cn(
         "sticky top-0 z-50 backdrop-blur transition-[background-color,border-color,box-shadow] duration-[var(--dur-fast)] ease-[var(--ease-premium)]",
         scrolled
-          ? "bg-background/85 border-b border-border shadow-[0_1px_0_0_rgba(255,255,255,0.04)]"
+          ? "bg-background/85 border-b border-border"
           : "bg-background/60 border-b border-transparent",
       )}
     >
@@ -96,7 +96,7 @@ export default function Navbar() {
               </Link>
               <a
                 href="/#pricing"
-                className={cn(buttonVariants({ variant: "default" }), "h-9 px-4 text-sm font-semibold")}
+                className={cn(buttonVariants({ variant: "default" }), "h-9 px-5 text-sm font-medium")}
               >
                 Subscribe Now
               </a>
@@ -168,7 +168,7 @@ export default function Navbar() {
                 </Link>
                 <a
                   href="/#pricing"
-                  className={cn(buttonVariants({ variant: "default" }), "h-9 px-4 text-sm font-semibold text-center")}
+                  className={cn(buttonVariants({ variant: "default" }), "h-9 px-5 text-sm font-medium text-center")}
                   onClick={() => setOpen(false)}
                 >
                   Subscribe Now

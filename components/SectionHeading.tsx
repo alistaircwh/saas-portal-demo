@@ -7,17 +7,27 @@ type SectionHeadingProps = {
   title: ReactNode;
   subtitle?: ReactNode;
   align?: "center" | "left";
-  /** Tone of the title text — light for dark "warm" surfaces. */
-  tone?: "default" | "light";
   className?: string;
 };
+
+// Signature move: in any multi-word headline the first word is mint, the rest
+// cream. Applied automatically when the title is a plain string.
+function firstWordMint(title: ReactNode): ReactNode {
+  if (typeof title !== "string") return title;
+  const [first, ...rest] = title.split(" ");
+  if (rest.length === 0) return title;
+  return (
+    <>
+      <span className="text-primary">{first}</span> {rest.join(" ")}
+    </>
+  );
+}
 
 export default function SectionHeading({
   eyebrow,
   title,
   subtitle,
   align = "center",
-  tone = "default",
   className,
 }: SectionHeadingProps) {
   const centered = align === "center";
@@ -32,37 +42,27 @@ export default function SectionHeading({
       <Reveal>
         <span
           className={cn(
-            "inline-flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.18em] text-primary",
+            "va-overline inline-flex items-center gap-3 text-xs text-muted-foreground",
             centered && "justify-center",
           )}
         >
-          <span className="h-px w-7 bg-gradient-to-r from-transparent to-primary/70" />
+          <span className="h-px w-7 bg-gradient-to-r from-transparent to-border" />
           {eyebrow}
           {centered && (
-            <span className="h-px w-7 bg-gradient-to-l from-transparent to-primary/70" />
+            <span className="h-px w-7 bg-gradient-to-l from-transparent to-border" />
           )}
         </span>
       </Reveal>
 
       <Reveal delay={80}>
-        <h2
-          className={cn(
-            "mt-5 text-3xl md:text-4xl font-bold tracking-tight text-balance",
-            tone === "light" ? "text-white" : "text-foreground",
-          )}
-        >
-          {title}
+        <h2 className="mt-5 text-4xl md:text-5xl font-light leading-[1.17] text-balance text-foreground">
+          {firstWordMint(title)}
         </h2>
       </Reveal>
 
       {subtitle && (
         <Reveal delay={140}>
-          <p
-            className={cn(
-              "mt-4 text-lg leading-relaxed text-pretty",
-              tone === "light" ? "text-stone-400" : "text-muted-foreground",
-            )}
-          >
+          <p className="mt-4 text-lg leading-relaxed text-pretty text-muted-foreground">
             {subtitle}
           </p>
         </Reveal>

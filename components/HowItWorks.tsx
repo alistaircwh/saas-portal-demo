@@ -43,7 +43,7 @@ const steps = [
 
 export default function HowItWorks() {
   return (
-    <section id="how-it-works" className="va-divider-top py-24 md:py-28 bg-card">
+    <section id="how-it-works" className="va-divider-top py-24 md:py-28 bg-background">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <SectionHeading
           eyebrow="Getting started"
@@ -55,13 +55,13 @@ export default function HowItWorks() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {steps.map((step, i) => (
             <Reveal key={step.number} delay={i * 80} className="h-full">
-              <Card className="bg-background h-full">
+              <Card className="h-full">
                 <CardContent className="flex flex-col items-center text-center p-8">
-                  <div className="mb-4 p-3 rounded-xl bg-primary/10 border border-primary/20">
+                  <div className="mb-4 p-3 rounded-lg bg-primary/10 border border-primary/20">
                     {step.icon}
                   </div>
-                  <span className="text-primary font-bold text-sm tracking-widest mb-2">{step.number}</span>
-                  <h3 className="text-foreground font-semibold text-lg mb-3">{step.title}</h3>
+                  <span className="va-overline text-primary text-sm mb-2">{step.number}</span>
+                  <h3 className="text-foreground font-medium text-lg mb-3">{step.title}</h3>
                   <p className="text-muted-foreground text-sm leading-relaxed">{step.description}</p>
                 </CardContent>
               </Card>

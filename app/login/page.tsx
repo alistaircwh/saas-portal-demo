@@ -29,14 +29,16 @@ export default async function LoginPage({
   if (user) redirect(target);
 
   return (
-    <section className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-gradient-to-br from-[#130E0E] via-[#0D0A0A] to-[#0A0808] py-20 px-4">
+    <section className="min-h-[calc(100vh-4rem)] flex items-center justify-center bg-background py-20 px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Welcome back</h1>
-          <p className="text-stone-400">Sign in to manage your subscription and licenses.</p>
+          <h1 className="text-4xl font-light text-foreground mb-2">
+            <span className="text-primary">Welcome</span> back
+          </h1>
+          <p className="text-muted-foreground">Sign in to manage your subscription and licenses.</p>
         </div>
         {reason === "timeout" && (
-          <p className="mb-4 text-sm text-stone-300 bg-card/60 border border-border rounded-md px-4 py-3 text-center">
+          <p className="mb-4 text-sm text-muted-foreground bg-card border border-border rounded-md px-4 py-3 text-center">
             You were signed out after a period of inactivity. Please sign in again.
           </p>
         )}

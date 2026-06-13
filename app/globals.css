@@ -5,44 +5,60 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* shadcn semantic tokens — set to dark brand values (permanently dark site) */
-  --background: #0D0A0A;
-  --foreground: #F0EEED;
-  --card: #130E0E;
-  --card-foreground: #F0EEED;
-  --popover: #130E0E;
-  --popover-foreground: #F0EEED;
-  --primary: #C41E1E;
-  --primary-foreground: #FFFFFF;
-  --secondary: #1A0D0D;
-  --secondary-foreground: #F0EEED;
-  --muted: #221212;
-  --muted-foreground: #a8a29e;
-  --accent: #C41E1E;
-  --accent-foreground: #FFFFFF;
-  --accent-dark: #961515;
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: #C41E1E;
-  --radius: 0.625rem;
+  /* shadcn semantic tokens — midnight vault theme (DESIGN.md structure) carrying
+     Vigilant Asia's brand voices: the filled action color is the brand red
+     (#910000 from the logo) lifted to a vivid scarlet so it reads as red and
+     stays legible on cocoa, and the outlined second voice is a warm gold chosen
+     to complement that red on the warm vault canvas. Warm near-black base, plum
+     cards, beige hairlines. */
+  --background: #200f0a; /* Cocoa Black */
+  --foreground: #fcfaf9; /* Cream Mist */
+  --card: #2b2538; /* Deep Plum */
+  --card-foreground: #fcfaf9;
+  --popover: #2b2538;
+  --popover-foreground: #fcfaf9;
+  --primary: #e63329; /* Vigilant Red — brand #910000 lifted for the dark canvas */
+  --primary-foreground: #fcfaf9; /* cream — white-on-red CTAs */
+  --secondary: #2b2538;
+  --secondary-foreground: #fcfaf9;
+  --muted: #4d3f3b; /* Aubergine — third elevation step */
+  --muted-foreground: #a69f9d; /* Stone */
+  --accent: #f2b13c; /* Vigilant Gold — outlined second voice, complements the red */
+  --accent-foreground: #200f0a;
+  --accent-soft: #f8cd7e; /* muted sibling of the gold voice */
+  --accent-deep: #cc8f2a; /* gold voice receded */
+  --accent-dark: #f8cd7e; /* small-text accent on tinted chips (legacy alias) */
+  --destructive: #f59a9a;
+  --border: rgba(227, 204, 192, 0.18); /* Warm Sand hairlines */
+  --input: rgba(227, 204, 192, 0.3);
+  --ring: #e63329;
+  --radius: 0.5rem; /* cards/images 8px; buttons are pills; inputs 4px */
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --sidebar: #130E0E;
-  --sidebar-foreground: #F0EEED;
-  --sidebar-primary: #C41E1E;
-  --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #1A0D0D;
-  --sidebar-accent-foreground: #F0EEED;
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: #C41E1E;
-  /* Brand palette extras */
-  --warm-800: #130E0E;
-  --warm-700: #1A0D0D;
-  --warm-600: #221212;
+  --sidebar: #2b2538;
+  --sidebar-foreground: #fcfaf9;
+  --sidebar-primary: #e63329;
+  --sidebar-primary-foreground: #fcfaf9;
+  --sidebar-accent: #4d3f3b;
+  --sidebar-accent-foreground: #fcfaf9;
+  --sidebar-border: rgba(227, 204, 192, 0.18);
+  --sidebar-ring: #e63329;
+  /* Elevated anchors: FinalCTA panel + Footer lift off the cocoa canvas */
+  --surface-dark: #2b2538;
+  --surface-dark-soft: #4d3f3b;
+  --surface-dark-foreground: #fcfaf9;
+  --surface-dark-muted: #a69f9d;
+  --surface-dark-border: rgba(227, 204, 192, 0.22);
+  /* Status palette — dark-tuned; soft tints are translucent washes */
+  --success: #7ee2a8;
+  --success-soft: rgba(126, 226, 168, 0.14);
+  --warning: #f5c065;
+  --warning-soft: rgba(245, 192, 101, 0.14);
+  --danger: #f59a9a;
+  --danger-soft: rgba(245, 154, 154, 0.14);
 }
 
 @theme inline {
@@ -60,6 +76,8 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-deep: var(--accent-deep);
   --color-accent-dark: var(--accent-dark);
   --color-destructive: var(--destructive);
   --color-border: var(--border);
@@ -78,19 +96,32 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  --color-warm-800: var(--warm-800);
-  --color-warm-700: var(--warm-700);
-  --color-warm-600: var(--warm-600);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-geist-sans);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
+  --color-surface-dark: var(--surface-dark);
+  --color-surface-dark-soft: var(--surface-dark-soft);
+  --color-surface-dark-foreground: var(--surface-dark-foreground);
+  --color-surface-dark-muted: var(--surface-dark-muted);
+  --color-surface-dark-border: var(--surface-dark-border);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  /* Flat surfaces: separation comes from the surface scale + beige hairlines,
+     never drop shadows. shadow-pop is reserved for floating panels. */
+  --shadow-card: 0 0 #0000;
+  --shadow-card-hover: 0 0 #0000;
+  --shadow-pop: 0 4px 24px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(227, 204, 192, 0.1);
+  --font-sans: var(--font-saans);
+  --font-mono: var(--font-saans-mono);
+  --font-heading: var(--font-saans);
+  --radius-sm: 4px;
+  --radius-md: 4px;
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+  --radius-xl: var(--radius);
+  --radius-2xl: var(--radius);
+  --radius-3xl: var(--radius);
+  --radius-4xl: var(--radius);
   --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
   --dur-fast: 150ms;
@@ -105,6 +136,9 @@
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+    /* Two-weight system: 500 carries body and UI chrome, 300 carries headlines */
+    font-weight: 500;
+    letter-spacing: 0.01em;
   }
   html {
     @apply font-sans;
@@ -123,13 +157,13 @@
 }
 
 @keyframes va-glow-drift {
-  0%, 100% { background-position: 60% 20%; opacity: 0.20; }
-  50% { background-position: 58% 22%; opacity: 0.26; }
+  0%, 100% { background-position: 60% 20%; opacity: 0.07; }
+  50% { background-position: 58% 22%; opacity: 0.12; }
 }
 
 @keyframes va-popular-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(196, 30, 30, 0); }
-  50% { box-shadow: 0 0 40px -10px rgba(196, 30, 30, 0.35); }
+  0%, 100% { box-shadow: 0 0 0 1px rgba(230, 51, 41, 0.3); }
+  50% { box-shadow: 0 0 0 1px rgba(230, 51, 41, 0.7); }
 }
 
 @keyframes va-check-draw {
@@ -138,31 +172,31 @@
 
 @keyframes va-flow-pulse {
   0%, 100% {
-    border-color: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 0 0 0 rgba(196, 30, 30, 0);
-    background-color: var(--color-background);
+    border-color: var(--border);
+    box-shadow: 0 0 0 0 rgba(230, 51, 41, 0);
+    background-color: var(--color-card);
   }
   6% {
     border-color: var(--color-primary);
-    box-shadow: 0 0 26px -6px rgba(196, 30, 30, 0.55);
-    background-color: rgba(196, 30, 30, 0.12);
+    box-shadow: 0 0 26px -6px rgba(230, 51, 41, 0.28);
+    background-color: rgba(230, 51, 41, 0.08);
   }
   18% {
     border-color: var(--color-primary);
-    box-shadow: 0 0 16px -8px rgba(196, 30, 30, 0.3);
-    background-color: rgba(196, 30, 30, 0.08);
+    box-shadow: 0 0 16px -8px rgba(230, 51, 41, 0.15);
+    background-color: rgba(230, 51, 41, 0.04);
   }
   26% {
-    border-color: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 0 0 0 rgba(196, 30, 30, 0);
-    background-color: var(--color-background);
+    border-color: var(--border);
+    box-shadow: 0 0 0 0 rgba(230, 51, 41, 0);
+    background-color: var(--color-card);
   }
 }
 
 @keyframes va-flow-arrow {
-  0%, 100% { color: rgba(255, 255, 255, 0.2); }
+  0%, 100% { color: rgba(252, 250, 249, 0.25); }
   10% { color: var(--color-primary); }
-  26% { color: rgba(255, 255, 255, 0.2); }
+  26% { color: rgba(252, 250, 249, 0.25); }
 }
 
 .va-check-path {
@@ -171,9 +205,9 @@
   animation: va-check-draw 600ms var(--ease-premium) 100ms forwards;
 }
 
-/* Intentional separation between stacked sections: a centred hairline that
-   fades out at the edges, giving the page a deliberate editorial rhythm
-   rather than relying on near-identical background swaps alone. */
+/* Intentional separation between stacked sections: a centred warm-sand
+   hairline that fades out at the edges, giving the page a deliberate
+   editorial rhythm on the otherwise flat cocoa canvas. */
 .va-divider-top {
   position: relative;
 }
@@ -188,11 +222,19 @@
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 255, 255, 0.09) 25%,
-    rgba(255, 255, 255, 0.12) 50%,
-    rgba(255, 255, 255, 0.09) 75%,
+    rgba(227, 204, 192, 0.12) 25%,
+    rgba(227, 204, 192, 0.2) 50%,
+    rgba(227, 204, 192, 0.12) 75%,
     transparent
   );
+}
+
+/* Mono overline — SaansMono-style tag/label treatment */
+.va-overline {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-weight: 300;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .va-reveal {

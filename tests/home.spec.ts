@@ -54,33 +54,38 @@ test.describe("Pricing section", () => {
   });
 
   test("shows all three tiers", async ({ page }) => {
-    await expect(page.getByRole("heading", { name: "Personal" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Family" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Business" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Personal", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Family", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Business", exact: true })).toBeVisible();
   });
 
   test("Family tier has Most Popular badge", async ({ page }) => {
     await expect(page.getByText(/most popular/i)).toBeVisible();
   });
 
-  test("toggle to monthly changes prices and label", async ({ page }) => {
-    const monthlyBtn = page.getByRole("button", { name: /monthly/i });
-    await monthlyBtn.click();
+  test("toggle to 2 Years updates prices and billing note", async ({ page }) => {
+    // Accessible name includes the "Save 10%" badge text, so match loosely.
+    const twoYearBtn = page.getByRole("button", { name: /2 years/i });
+    await twoYearBtn.click();
+    await expect(twoYearBtn).toHaveAttribute("aria-pressed", "true");
 
-    // Annual prices should no longer show as /yr
-    await expect(page.getByText(/\/mo/).first()).toBeVisible();
-    // Personal monthly = Math.round(290 / 12 / 0.83) = 29
-    await expect(page.getByText("29").first()).toBeVisible();
+    await expect(page.getByText("260").first()).toBeVisible();
+    await expect(page.getByText("440").first()).toBeVisible();
+    await expect(page.getByText("890").first()).toBeVisible();
+    await expect(page.getByText(/billed every 2 years/i).first()).toBeVisible();
   });
 
-  test("toggle back to annual restores /yr label", async ({ page }) => {
-    const monthlyBtn = page.getByRole("button", { name: /monthly/i });
-    await monthlyBtn.click();
-    const annualBtn = page.getByRole("button", { name: /annual/i });
-    await annualBtn.click();
+  test("toggle to 3 Years then back to 1 Year restores annual prices", async ({ page }) => {
+    await page.getByRole("button", { name: /3 years/i }).click();
+    await expect(page.getByText("230").first()).toBeVisible();
+    await expect(page.getByText("390").first()).toBeVisible();
+    await expect(page.getByText("790").first()).toBeVisible();
 
-    await expect(page.getByText(/\/yr/).first()).toBeVisible();
+    const oneYearBtn = page.getByRole("button", { name: "1 Year" });
+    await oneYearBtn.click();
+    await expect(oneYearBtn).toHaveAttribute("aria-pressed", "true");
     await expect(page.getByText("290").first()).toBeVisible();
+    await expect(page.getByText(/billed annually/i).first()).toBeVisible();
   });
 
   test("Subscribe Now buttons link to #contact", async ({ page }) => {
@@ -105,15 +110,10 @@ test.describe("FAQ Accordion", () => {
   });
 
   test("clicking a FAQ question expands it", async ({ page }) => {
-    const firstQuestion = page.locator('[data-accordion-item], details, [role="button"]').first();
-    // Find any button-like element in the FAQ section
-    const faqSection = page.locator("section").filter({ hasText: /frequently asked/i });
+    const faqSection = page.locator("section").filter({ hasText: /common questions/i });
     const firstTrigger = faqSection.getByRole("button").first();
-    if (await firstTrigger.count() > 0) {
-      await firstTrigger.click();
-      // After clicking, some content should expand (panel becomes visible)
-      await expect(faqSection).toBeVisible();
-    }
+    await firstTrigger.click();
+    await expect(firstTrigger).toHaveAttribute("aria-expanded", "true");
   });
 });
 

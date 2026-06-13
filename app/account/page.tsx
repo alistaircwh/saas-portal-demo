@@ -33,13 +33,15 @@ export default async function AccountPage() {
     <section className="min-h-[calc(100vh-4rem)] bg-background py-20 px-4">
       <div className="max-w-2xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white">Hi, {displayName}</h1>
-          <p className="text-stone-400 mt-1">{user.email}</p>
+          <h1 className="text-4xl font-light text-foreground">
+            <span className="text-primary">Hi,</span> {displayName}
+          </h1>
+          <p className="text-muted-foreground mt-1">{user.email}</p>
         </div>
 
         <Card>
           <CardContent className="p-8 space-y-4">
-            <h2 className="text-lg font-semibold text-white">Account details</h2>
+            <h2 className="text-lg font-medium text-foreground">Account details</h2>
             <dl className="divide-y divide-border">
               <div className="flex justify-between py-3 text-sm">
                 <dt className="text-muted-foreground">Email</dt>
