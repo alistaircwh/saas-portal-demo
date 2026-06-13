@@ -103,11 +103,22 @@ No monthly plans. Toggle is 1 Year / 2 Years (Save 10%) / 3 Years (Save 21%).
 
 ## Brand & Design
 
+The visual system is a "midnight vault" (structure from `DESIGN.md`, a Dashlane-style reference) carrying Vigilant Asia's own brand accents. The reference's *structure* applies (surfaces, two-weight type, pill buttons, flat cards); its accent colors do NOT — the primary accent is the Vigilant brand red (`#910000` from the logo on vigilantasia.com.my), lifted to a vivid scarlet so it reads as red and stays legible on the dark canvas.
+
 - **Brand name:** Vigilant Asia
-- **Primary color:** `#C41E1E` (red) — mapped to `text-primary` / `bg-primary`
-- **Background:** Near-black (`#080808` / `#0C0C14`) with card surfaces in `bg-card`
-- **Font:** Geist Sans (Google Fonts via `next/font`)
-- **Tone:** Confident, warm, jargon-free. We talk to non-technical business owners and professionals — avoid security jargon unless explaining it immediately.
+- **Theme:** Dark, warm. Cocoa near-black page (`--background: #200f0a`), deep plum card surfaces (`--card: #2b2538`), aubergine (`--muted: #4d3f3b`) for nested emphasis only. Warm-sand hairline borders (`--border: rgba(227,204,192,0.18)`) — never cold grays on dark surfaces. Text is cream `#fcfaf9` (never pure white); muted text is stone `#a69f9d`.
+- **Accent voices:** Two voices, never both on one control. Filled/primary voice: Vigilant Red `--primary: #e63329` (brand `#910000` lifted for the dark canvas; on-red text is cream `--primary-foreground: #fcfaf9`) — CTAs, eyebrow numbers, icon chips, first-word headline accent, focused conversion moments. Outlined/secondary voice: Vigilant Gold `--accent: #f2b13c` — chosen to complement the red and keep the palette warm (never cold). Outlined buttons and secondary highlights only.
+- **First-word accent rule:** in any multi-word headline, the first word is `text-primary` (coral), the rest cream. `SectionHeading` applies this automatically for string titles.
+- **Two-weight typography:** weight 300 (`font-light`) for all headlines, display sizes, and big stats; weight 500 (`font-medium`, also the body default set on `<body>`) for everything else. **Never use `font-semibold` or `font-bold`.** Size and color do the emphasis. Mono overlines use the `.va-overline` utility (uppercase, 0.06em tracking).
+- **Shapes:** buttons/tags/pills are `rounded-full` (9999px); cards/panels/images 8px (`rounded-lg`; the `--radius-*` scale collapses xl+ to 8px); inputs 4px (`rounded-md`).
+- **Elevation:** cards are FLAT — no drop shadows; separation comes from the surface scale + warm-sand hairlines (`shadow-card`/`shadow-card-hover` tokens are zeroed). `shadow-pop` is reserved for genuinely floating panels (e.g. the phone mockup).
+- **Surface tokens:** `surface-dark*` tokens now map to the plum elevation scale and are used by the FinalCTA panel and Footer (elevated anchors on the cocoa canvas).
+- **Logos:** the page is dark, so `public/logo.svg` (white) is used everywhere (Navbar, Footer, Awards panel). `public/logo-dark.svg` is reserved for light islands (e.g. email templates, light embeds).
+- **Status colors:** `--success`/`--warning`/`--danger` are dark-tuned light tints; `-soft` variants are translucent washes. `ThreatVisual.tsx` mirrors these as local hex consts (the gradients/`33` alpha math need literal values) and renders the phone screen in the vault palette — cocoa screen, plum cards, cream text, warm-sand hairlines — so status color appears only as small functional punctuation, never as a bright light island.
+- **Font:** Inter (300 + 500 only) as `--font-saans`, JetBrains Mono (300) as `--font-saans-mono`, via `next/font`.
+- **Tone:** Confident, warm, jargon-free. We talk to non-technical business owners and professionals — avoid security jargon unless explaining it immediately. Never use em dashes in site copy; use periods or commas instead.
+
+**Do not:** use pure black or pure white; use weights 600/700; pair red and gold on the same control; add drop shadows to cards; use rectangular buttons; render body text below 14px; add more than the existing accent washes (strong red glows read muddy on cocoa — keep radial glow opacity ≤ 0.14).
 
 ---
 
@@ -135,9 +146,10 @@ The site has a deliberate, restrained motion language. **Reuse it; don't invent 
 
 **Keyframes** (in `app/globals.css`):
 - `va-rise` — opacity 0 + translateY(12px) → 0; used by `.va-reveal`
-- `va-glow-drift` — slow background-position oscillation (12s loop on the hero radial)
-- `va-popular-pulse` — slow red box-shadow breath (4s loop, Pricing's Family tier only)
+- `va-glow-drift` — slow background-position oscillation (12s loop on the hero coral radial); opacity tuned low (0.07–0.12) — stronger washes read muddy on cocoa
+- `va-popular-pulse` — slow 1px coral ring breath (4s loop, Pricing's Family tier only); a hairline-intensity pulse, not a drop shadow — cards stay flat
 - `va-check-draw` — stroke-dasharray draw-on for the contact success SVG check
+- `va-flow-pulse` / `va-flow-arrow` — HowProtectionWorks flow diagram; resting colors are `var(--border)` / `var(--card)`, highlight is coral
 
 **Reusable primitives:**
 - `<Reveal delay={ms}>` (`components/Reveal.tsx`) — wrap any element/section for an on-scroll fade+rise. One-shot (does not re-animate on scroll-up). Hero uses it on mount; sections use it on scroll. Stagger siblings with `delay`.
@@ -149,7 +161,7 @@ The site has a deliberate, restrained motion language. **Reuse it; don't invent 
 - **Sliding toggle pill** (`components/Pricing.tsx`): refs on each button, one absolutely-positioned `<span>` indicator whose `left`/`width` transition via `--dur-standard`.
 - **Smooth accordion / mobile menu expand** (`components/FAQAccordion.tsx`, `components/Navbar.tsx`): always-mounted inner panel inside a `grid` wrapper that animates `grid-template-rows: 0fr → 1fr`. No height measurement, no JS animation.
 - **Cross-fading value swap** (Pricing price digits): wrap the changing value in a span keyed off the changing state (`key={years}`) plus `animate-in fade-in-0 zoom-in-95 duration-200` from `tw-animate-css`.
-- **Card hover language** (`components/ui/card.tsx`, baseline): `hover:-translate-y-0.5 hover:ring-foreground/20`. Inherited by every Card on the site. Don't add big scales or rotations.
+- **Card hover language** (`components/ui/card.tsx`, baseline): `hover:-translate-y-0.5 hover:shadow-card-hover hover:ring-foreground/15`. Inherited by every Card on the site. Don't add big scales or rotations.
 - **Reduced-motion is the floor, not the ceiling.** Never write an animation that bypasses the global `@media (prefers-reduced-motion: reduce)` rule.
 
 **Things we deliberately do NOT do:** parallax, autoplay carousels, marquee strips, floating particles, bouncy springs, hero typewriters, custom cursors, hover scales > 1.02. If a future change wants one of these, push back.
@@ -216,7 +228,7 @@ Test files:
 - The FAQ panel and mobile menu are **always in the DOM** (collapsed via `grid-template-rows: 0fr`). Assert `toBeVisible()` after expand, not `toHaveCount(0)` before.
 - The Pricing term toggle has a sliding indicator `<span>` *behind* the buttons — the active "selected" styling lives on that span, not the button itself. Assert on text/aria-pressed, not on the active background class.
 
-**Known stale tests:** `tests/home.spec.ts` lines 66–84 reference a Monthly/Annual toggle that no longer exists (the UI is 1/2/3-Year). These two tests have been failing since before the pricing UI changed and should be rewritten against the current term toggle.
+The pricing toggle tests assert against the 1/2/3-Year term toggle (`aria-pressed` + per-term prices and billing notes).
 
 ---
 
@@ -245,6 +257,4 @@ Always verify the golden path (page loads, primary CTAs work, pricing toggle wor
 - `lib/provisioning/zimperium.ts` — Zimperium license provisioning skeleton; not yet implemented (set `PROVISIONING_PROVIDER=mock` for local dev)
 - `lib/email/index.ts` — email sending is mocked; wire up Resend (or similar) for production
 - `app/api/dev/` — `seed/` and `demo/` routes are dev-only helpers; **delete before deploying to production**
-- WhatsApp link in Footer uses placeholder `wa.me/60XXXXXXXXX` — replace with real number
-- Terms of Service and Privacy Policy links are `href="#"` placeholders
-- `tests/home.spec.ts` lines 66–84 reference a non-existent Monthly/Annual toggle and need rewriting against the 1/2/3-Year term toggle (see Tests section)
+- `app/refund-policy/page.tsx` — interim case-by-case refund terms; replace with finalised refund window once confirmed

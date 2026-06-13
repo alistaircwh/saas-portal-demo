@@ -26,12 +26,27 @@ interface ScreenState {
   };
 }
 
-const GREEN = "#16A34A";
-const GREEN_SOFT = "#E7F7ED";
-const RED = "#D62828";
-const RED_SOFT = "#FBE9E9";
-const AMBER = "#E58A00";
-const AMBER_SOFT = "#FCEFD9";
+// Dark-tuned status palette mirroring --success/--danger/--warning (+ -soft)
+// in globals.css. The phone screen is no longer a light island: it sits inside
+// the midnight vault, so surfaces are cocoa/plum, text is cream, borders are
+// warm-sand hairlines, and status colour appears only as small functional
+// punctuation (DESIGN.md). Kept as local consts because the gradients/`33`
+// alpha math below need the literal values.
+const GREEN = "#7EE2A8";
+const GREEN_SOFT = "rgba(126,226,168,0.14)";
+const RED = "#F59A9A";
+const RED_SOFT = "rgba(245,154,154,0.14)";
+const AMBER = "#F5C065";
+const AMBER_SOFT = "rgba(245,192,101,0.14)";
+
+// Vault surfaces for the in-screen UI.
+const SCREEN_BG = "#1b100c"; // cocoa, one notch off the device frame
+const PANEL = "#2b2538"; // deep plum card surface
+const HAIRLINE = "rgba(227,204,192,0.18)"; // warm-sand hairline
+const CREAM = "#fcfaf9";
+const STONE = "#a69f9d";
+const STONE_DIM = "rgba(166,159,157,0.55)";
+const COCOA = "#200f0a"; // on-accent text
 
 const WEB: CardData = { lines: ["LAST 7 DAYS", "40 Scans", "3 Sites Blocked"], alert: false };
 
@@ -103,28 +118,31 @@ export default function ThreatVisual() {
       <div
         className={cnGlow}
         style={{
-          background: `radial-gradient(circle at 60% 38%, ${state.accent}55, transparent 70%)`,
+          background: `radial-gradient(circle at 60% 38%, ${state.accent}26, transparent 70%)`,
           transition: "background 500ms cubic-bezier(0.16,1,0.3,1)",
         }}
         aria-hidden="true"
       />
 
-      <div className="relative rounded-[2.75rem] border border-white/10 bg-gradient-to-b from-[#161010] to-[#0A0808] p-3 shadow-[0_50px_120px_-40px_rgba(196,30,30,0.45)]">
+      <div className="relative rounded-[2.75rem] border border-border bg-gradient-to-b from-[#161010] to-[#0A0808] p-3 shadow-[0_40px_90px_-40px_rgba(0,0,0,0.7)]">
         {/* Notch */}
         <div className="absolute left-1/2 top-3 z-10 h-5 w-28 -translate-x-1/2 rounded-b-2xl bg-[#0A0808]" />
 
-        {/* Screen — the live MTD app UI (light theme) */}
-        <div className="relative overflow-hidden rounded-[2.1rem] bg-[#F4F4F6] px-3.5 pb-4 pt-7 text-[#14181F]">
+        {/* Screen — the live MTD app UI (vault theme) */}
+        <div
+          className="relative overflow-hidden rounded-[2.1rem] px-3.5 pb-4 pt-7"
+          style={{ backgroundColor: SCREEN_BG, color: CREAM }}
+        >
           {/* Status bar */}
-          <div className="mb-3 flex items-center justify-between px-1 text-[10px] font-semibold text-[#14181F]">
+          <div className="mb-3 flex items-center justify-between px-1 text-[10px] font-medium" style={{ color: CREAM }}>
             <span>9:41</span>
-            <span className="flex items-center gap-2 text-[#6B7280]">
+            <span className="flex items-center gap-2" style={{ color: STONE }}>
               <SignalIcon />
               <WifiBars />
               <BatteryIcon />
               <span className="ml-0.5 grid grid-cols-2 gap-[2px]">
                 {Array.from({ length: 6 }).map((_, i) => (
-                  <span key={i} className="h-[3px] w-[3px] rounded-[1px] bg-[#9CA3AF]" />
+                  <span key={i} className="h-[3px] w-[3px] rounded-[1px]" style={{ backgroundColor: STONE_DIM }} />
                 ))}
               </span>
             </span>
@@ -132,25 +150,28 @@ export default function ThreatVisual() {
 
           {/* Header / status hero */}
           <div
-            className={`mb-3 flex flex-col items-center rounded-2xl px-4 pb-4 pt-3 text-center ${transition}`}
-            style={{ background: `linear-gradient(180deg, ${state.accentSoft} 0%, #FFFFFF 100%)` }}
+            className={`mb-3 flex flex-col items-center rounded-2xl border px-4 pb-4 pt-3 text-center ${transition}`}
+            style={{
+              background: `linear-gradient(180deg, ${state.accentSoft} 0%, ${PANEL} 100%)`,
+              borderColor: HAIRLINE,
+            }}
           >
-            <RadarShield accent={state.accent} accentSoft={state.accentSoft} />
+            <RadarShield accent={state.accent} />
 
             <div
               key={state.key}
               className="flex flex-col items-center animate-in fade-in-0 slide-in-from-bottom-1 duration-500"
             >
-              <p className={`mt-2 text-[13px] font-extrabold tracking-wide ${transition}`} style={{ color: state.accent }}>
+              <p className={`mt-2 text-[13px] font-medium tracking-wide ${transition}`} style={{ color: state.accent }}>
                 {state.title}
               </p>
-              <p className="mt-0.5 text-[12px] font-bold tracking-wide text-[#14181F]">{state.subtitle}</p>
-              <p className="mt-0.5 text-[9px] font-medium uppercase tracking-wider text-[#9CA3AF]">{state.note}</p>
+              <p className="mt-0.5 text-[12px] font-medium tracking-wide" style={{ color: CREAM }}>{state.subtitle}</p>
+              <p className="mt-0.5 text-[9px] font-medium uppercase tracking-wider" style={{ color: STONE }}>{state.note}</p>
             </div>
 
             <span
-              className="mt-2.5 rounded-full px-5 py-1 text-[11px] font-bold text-white"
-              style={{ backgroundColor: GREEN }}
+              className="mt-2.5 rounded-full px-5 py-1 text-[11px] font-medium"
+              style={{ backgroundColor: state.accent, color: COCOA }}
             >
               {state.button}
             </span>
@@ -165,15 +186,18 @@ export default function ThreatVisual() {
           </div>
 
           {/* Threat zones */}
-          <div className="mt-2 flex items-center gap-2.5 rounded-xl bg-white p-2.5 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+          <div
+            className="mt-2 flex items-center gap-2.5 rounded-xl border p-2.5"
+            style={{ backgroundColor: PANEL, borderColor: HAIRLINE }}
+          >
             <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg" style={{ backgroundColor: GREEN_SOFT }}>
               <MapPin size={14} strokeWidth={2} style={{ color: GREEN }} />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-[11px] font-semibold leading-tight text-[#14181F]">Threat Zones</p>
-              <p className="text-[9px] leading-tight text-[#9CA3AF]">Identify malicious networks around you</p>
+              <p className="text-[11px] font-medium leading-tight" style={{ color: CREAM }}>Threat Zones</p>
+              <p className="text-[9px] leading-tight" style={{ color: STONE }}>Identify malicious networks around you</p>
             </div>
-            <ChevronRight size={14} className="shrink-0 text-[#C4C7CE]" />
+            <ChevronRight size={14} className="shrink-0" style={{ color: STONE_DIM }} />
           </div>
         </div>
       </div>
@@ -184,7 +208,7 @@ export default function ThreatVisual() {
           <span
             key={s.key}
             className={`h-1.5 rounded-full transition-all duration-500 ${i === index ? "w-5" : "w-1.5"}`}
-            style={{ backgroundColor: i === index ? state.accent : "rgba(255,255,255,0.18)" }}
+            style={{ backgroundColor: i === index ? state.accent : "rgba(252,250,249,0.2)" }}
           />
         ))}
       </div>
@@ -192,7 +216,7 @@ export default function ThreatVisual() {
   );
 }
 
-const cnGlow = "absolute -inset-8 rounded-full opacity-60 blur-3xl";
+const cnGlow = "absolute -inset-8 rounded-full opacity-40 blur-3xl";
 
 function StatusCard({
   label,
@@ -211,29 +235,29 @@ function StatusCard({
   const iconBg = card.alert ? accentSoft : GREEN_SOFT;
 
   return (
-    <div className="relative flex min-h-[78px] flex-col justify-between rounded-xl bg-white p-2.5 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+    <div
+      className="relative flex min-h-[78px] flex-col justify-between rounded-xl border p-2.5"
+      style={{ backgroundColor: PANEL, borderColor: HAIRLINE }}
+    >
       {card.alert && (
         <span
-          className="absolute right-2 top-2 flex h-3.5 w-3.5 items-center justify-center rounded-full text-[9px] font-bold text-white"
-          style={{ backgroundColor: accent }}
+          className="absolute right-2 top-2 flex h-3.5 w-3.5 items-center justify-center rounded-full text-[9px] font-medium"
+          style={{ backgroundColor: accent, color: COCOA }}
         >
           !
         </span>
       )}
-      <p className="text-[11px] font-semibold leading-tight text-[#14181F]">{label}</p>
+      <p className="text-[11px] font-medium leading-tight" style={{ color: CREAM }}>{label}</p>
 
       <div key={card.lines.join("|")} className="mt-1 animate-in fade-in-0 duration-500">
         {card.alert ? (
-          <p className="text-[10px] font-semibold leading-tight text-[#14181F]">{card.lines[0]}</p>
+          <p className="text-[10px] font-medium leading-tight" style={{ color: CREAM }}>{card.lines[0]}</p>
         ) : (
           card.lines.map((line, i) => (
             <p
               key={i}
-              className={
-                i === 0
-                  ? "text-[8px] font-medium uppercase tracking-wider text-[#B0B4BC] leading-tight"
-                  : "text-[10px] font-semibold text-[#14181F] leading-tight"
-              }
+              className={i === 0 ? "text-[8px] font-medium uppercase tracking-wider leading-tight" : "text-[10px] font-medium leading-tight"}
+              style={{ color: i === 0 ? STONE_DIM : CREAM }}
             >
               {line}
             </p>
@@ -245,16 +269,16 @@ function StatusCard({
         <div className={`flex h-7 w-7 items-center justify-center rounded-lg ${transition}`} style={{ backgroundColor: iconBg }}>
           <Icon size={14} strokeWidth={2} style={{ color: iconColor }} className={transition} />
         </div>
-        <ChevronRight size={13} className="text-[#C4C7CE]" />
+        <ChevronRight size={13} style={{ color: STONE_DIM }} />
       </div>
     </div>
   );
 }
 
-function RadarShield({ accent, accentSoft }: { accent: string; accentSoft: string }) {
+function RadarShield({ accent }: { accent: string }) {
   return (
     <svg width="52" height="52" viewBox="0 0 52 52" fill="none" className={transition} style={{ color: accent }}>
-      <circle cx="26" cy="26" r="22" stroke={accentSoft} strokeWidth="6" />
+      <circle cx="26" cy="26" r="22" stroke="currentColor" strokeOpacity="0.25" strokeWidth="6" />
       <circle cx="26" cy="26" r="22" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeDasharray="14 8" />
       {/* tick marks */}
       <path d="M26 2v4M26 46v4M2 26h4M46 26h4" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
